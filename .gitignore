@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Private business documents — do NOT publish
+PXT_Messaging_Copy.md
+PXT_Tech_Studio_LLC_Checklist.md
+PXT_Tech_Studio_LLC_Progress_Log.md
+Assets/Receipt.pdf
+
+# Old React source (site is now static index.html)
+PXTTechStudioSite.jsx
+
+# Unused raw logo source files (keep only the cropped PNGs + wordreview.jpg)
+Assets/logo-day.jpg
+Assets/logo-night.jpg
+Assets/logo2-day.jpg
+Assets/logo2-night.jpg
+Assets/logo-day.png
+Assets/logo-night.png

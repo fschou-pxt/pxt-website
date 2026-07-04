@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PXT Tech Studio — AI-powered educational & learning platform</title>
+<meta name="description" content="PXT Tech Studio builds AI-powered educational products at the intersection of deep domain expertise and modern technology. Home of In[Neo]Sight and Capybara Around the World." />
+<link rel="icon" href="Assets/logo-day.png" />
+<meta property="og:title" content="PXT Tech Studio" />
+<meta property="og:description" content="AI-powered educational & learning platform. Home of In[Neo]Sight and Capybara Around the World." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#fffbeb; --fg:#0f172a; --muted:#475569; --muted2:#94a3b8;
+    --card:#ffffff; --border:#e2e8f0; --field-border:#cbd5e1;
+    --header-grad:linear-gradient(180deg, #ffffff 0%, #fffbeb 100%);
+    --btn:#0f172a; --btn-hover:#334155;
+    --teal:#2b6a5f; --mint:#5fcfac;   /* In[Neo]Sight */
+    --blob1:rgba(129,140,248,.40); --blob2:rgba(252,211,77,.50); --blob3:rgba(253,164,175,.40);
+    --capy-invert:0;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b1220; --fg:#e7ecf3; --muted:#aab6c8; --muted2:#7c8aa0;
+      --card:#131c2b; --border:#25324a; --field-border:#33415c;
+      --header-grad:linear-gradient(180deg, #14171c 0%, #0b1220 100%);
+      --btn:#4338ca; --btn-hover:#4f46e5;
+      --blob1:rgba(129,140,248,.16); --blob2:rgba(252,211,77,.14); --blob3:rgba(253,164,175,.14);
+      --capy-invert:1;
+    }
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:"Nunito",system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--fg); overflow-x:hidden;
+    transition:background .3s ease, color .3s ease;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:768px; margin:0 auto; padding:0 24px;}
+  .eyebrow{text-align:center; font-size:12px; font-weight:700; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--muted2); margin:0 0 14px;}
+  .card{background:var(--card); border:1px solid var(--border); border-radius:18px; padding:36px;}
+  section{scroll-margin-top:80px;}
+
+  /* header */
+  header.site{position:sticky; top:0; z-index:30;
+    background:var(--header-grad); border-bottom:none;}
+  header.site .bar{max-width:768px; margin:0 auto; padding:0 24px; height:64px;
+    display:flex; align-items:center; justify-content:space-between; gap:8px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px;}
+  .brand img{height:36px; width:36px; border-radius:9px;}
+  .logo-night{display:none;}
+  nav.top{display:flex; gap:20px; font-size:14px; font-weight:600; color:var(--muted);}
+  nav.top a:hover{color:var(--fg);}
+  @media (prefers-color-scheme: dark){ .logo-day{display:none;} .logo-night{display:inline-block;} }
+
+  /* hero */
+  .hero{position:relative; max-width:896px; margin:0 auto; padding:112px 24px; text-align:center;}
+  .blobs{position:absolute; inset:0; overflow:hidden; pointer-events:none;}
+  .blob{position:absolute; border-radius:50%; filter:blur(64px);}
+  .blob.b1{top:-64px; left:-80px; width:288px; height:288px; background:var(--blob1);}
+  .blob.b2{top:40px; right:-64px; width:288px; height:288px; background:var(--blob2);}
+  .blob.b3{bottom:0; left:33%; width:224px; height:224px; background:var(--blob3);}
+  .hero .inner{position:relative;}
+  .pill-top{display:inline-block; border:1px solid var(--border); background:var(--card);
+    padding:6px 16px; border-radius:999px; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:24px;}
+  h1{font-family:"Sora",system-ui,sans-serif; font-size:clamp(34px,5.8vw,52px);
+    font-weight:700; letter-spacing:-.02em; line-height:1.12; margin:0;}
+  .lead{max-width:36rem; margin:24px auto 0; font-size:18px; color:var(--muted);}
+
+  /* story */
+  .story h2{font-size:24px; font-weight:800; letter-spacing:-.01em; margin:0 0 16px;}
+  .story p{color:var(--muted); line-height:1.7; margin:0 0 16px;}
+  .story p:last-child{margin-bottom:0;}
+
+  /* timeline */
+  .timeline{margin-top:28px; border-top:1px solid var(--border); padding-top:28px; position:relative;}
+  .timeline::before{content:""; position:absolute; left:21px; top:31px; bottom:7px; width:2px; background:var(--border);}
+  .tl-item{position:relative; padding:0 0 22px 42px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{content:""; position:absolute; left:12px; top:3px; width:14px; height:14px;
+    border-radius:50%; background:var(--teal); border:3px solid var(--bg); box-shadow:0 0 0 2px var(--teal);}
+  .tl-year{font-weight:800; color:var(--teal); font-size:14px; letter-spacing:.02em; margin-bottom:3px;}
+  .tl-body{color:var(--muted); line-height:1.55;}
+  .tl-body b{color:var(--fg); font-weight:700;}
+
+  /* product cards */
+  .accent{height:6px; width:100%;}
+  .prod{border:1px solid var(--border); border-radius:18px; overflow:hidden; background:var(--card);}
+  .prod .pad{padding:32px;}
+  .ineo-mark{font-family:"Courier New",Courier,monospace; font-weight:700; color:var(--teal); font-size:24px;}
+  .ineo-mark .neo{color:var(--mint);}
+  .ineo-tag{font-family:"Courier New",Courier,monospace; font-style:italic; color:#8a8f98; font-size:16px; margin:2px 0 0;}
+  .prod p.body{color:var(--muted); line-height:1.7; margin:14px 0 0;}
+  .chips{margin-top:22px; display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{background:#e6f5ef; color:var(--teal); font-size:14px; padding:4px 12px; border-radius:999px;}
+  @media (prefers-color-scheme: dark){ .chip{background:#12312a;} }
+  .btn{display:inline-flex; align-items:center; gap:8px; border-radius:999px; padding:12px 24px;
+    font-weight:600; color:#fff; margin-top:26px;}
+  .btn.ineo{background:linear-gradient(90deg,var(--teal),var(--mint));}
+
+  /* Capy panel */
+  .capy{border-radius:18px; overflow:hidden; border:3px solid #fff;
+    box-shadow:0 14px 30px rgba(59,32,16,.14); background:#FFF9F3;
+    filter:none;}
+  @media (prefers-color-scheme: dark){
+    .capy{filter:invert(1) hue-rotate(180deg); border-color:transparent;}
+    .capy img{filter:invert(1) hue-rotate(180deg);}
+  }
+  .capy .pad{padding:32px; font-family:"Nunito",sans-serif; color:#3B2010;}
+  .capy .ribbon{display:inline-block; background:#E8955A; color:#fff; font-family:"Bubblegum Sans",cursive;
+    padding:4px 14px; border-radius:999px; font-size:14px; transform:rotate(-2deg);}
+  .capy h3.title{font-family:"Bubblegum Sans",cursive; color:#8B5E3C; font-size:30px; margin:16px 0 0;}
+  .capy p.sub{color:#6b5a48; margin:8px 0 0;}
+  .capy .mission{font-family:"Caveat",cursive; font-weight:500; font-size:24px; line-height:1.35; color:#2E8B7A; margin:20px 0 0;}
+  .capy .mission b{color:#CB7A42;}
+  .capy .appcard{margin-top:24px; background:#fff; border:2px solid #2E8B7A; border-radius:18px;
+    padding:16px; display:flex; gap:18px; align-items:center; flex-wrap:wrap;}
+  .capy .appcard img{width:150px; border-radius:16px; box-shadow:0 8px 20px rgba(59,32,16,.18); flex:0 0 auto;}
+  .capy .appcard .apptext{flex:1 1 220px; min-width:0;}
+  .capy .appcard .apppill{display:inline-block; background:#fff; border:2px solid #FFD9A8; color:#2E8B7A;
+    font-weight:800; font-size:12px; padding:3px 10px; border-radius:999px;}
+  .capy .appcard h4{font-family:"Bubblegum Sans",cursive; color:#8B5E3C; font-size:20px; margin:8px 0 0;}
+  .capy .appcard p{color:#6b5a48; font-size:14px; margin:4px 0 0;}
+  .capy .note{color:#6b5a48; font-size:14px; margin:12px 0 0;}
+  .capy .btn.capybtn{font-family:"Bubblegum Sans",cursive; font-size:18px; background:#E8955A;
+    box-shadow:0 6px 0 #CB7A42; color:#fff;}
+
+  /* collaborate form */
+  form .row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:520px){ form .row{grid-template-columns:1fr;} }
+  label{display:block; font-size:14px; font-weight:600; color:var(--fg); margin:0 0 6px;}
+  input,select,textarea{width:100%; border:1px solid var(--field-border); background:var(--card);
+    color:var(--fg); border-radius:10px; padding:12px 16px; font:inherit;}
+  input:focus,select:focus,textarea:focus{outline:none; border-color:var(--btn);}
+  .field{margin-top:16px;}
+  button.submit{width:100%; margin-top:20px; border:none; border-radius:10px; padding:14px;
+    background:var(--btn); color:#fff; font-weight:600; font-size:16px; cursor:pointer;}
+  button.submit:hover{background:var(--btn-hover);}
+
+  /* footer */
+  footer.site{border-top:1px solid var(--border);}
+  footer.site .row{max-width:768px; margin:0 auto; padding:32px 24px; display:flex; gap:12px;
+    align-items:center; justify-content:space-between; flex-wrap:wrap; color:var(--muted2); font-size:14px;}
+  footer.site a:hover{color:var(--fg);}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="bar">
+    <a class="brand" href="#top">
+      <img class="logo-day" src="Assets/logo2-day.png" alt="PXT Tech Studio" />
+      <img class="logo-night" src="Assets/logo2-night.png" alt="PXT Tech Studio" />
+      <span>PXT Tech Studio</span>
+    </a>
+    <nav class="top">
+      <a href="#story">Our Story</a>
+      <a href="#work">Our Work</a>
+      <a href="#collaborate">Collaborate</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section id="top" class="hero">
+  <div class="blobs"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+  <div class="inner">
+    <span class="pill-top">Domain expertise × AI</span>
+    <h1>Where expertise meets AI, and ideas become products</h1>
+    <p class="lead">PXT Tech Studio builds AI-powered educational products at the intersection of deep domain expertise and modern technology.</p>
+  </div>
+</section>
+
+<!-- Story -->
+<section id="story" class="wrap" style="padding-bottom:64px;">
+  <p class="eyebrow">Our Story</p>
+  <div class="card story">
+    <h2>Where domain expertise meets AI</h2>
+    <p>PXT Tech Studio was born from a simple shift: AI and large language models have matured into agents capable of turning ideas into real products — no longer gated behind years of coding experience. That unlocks a new kind of cross-disciplinary collaboration, where specialists can bring technology directly into their own fields rather than waiting for someone to translate for them.</p>
+    <p>PXT was founded by a U.S. board-certified pediatrician, neonatologist, and developmental biologist whose career centers on developmental milestones, brain development, and learning. Using AI agents to bring that expertise together with technology is exactly the kind of collaboration PXT exists to make possible.</p>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-year">2026</div><div class="tl-body"><b>PXT Tech Studio, LLC founded</b> in California, USA.</div></div>
+      <div class="tl-item"><div class="tl-year">2026</div><div class="tl-body"><b>In[Neo]Sight launches</b> — a tiered platform explaining neonatal-perinatal research for clinicians, researchers, and families.</div></div>
+      <div class="tl-item"><div class="tl-year">2026</div><div class="tl-body"><b>Word Review goes live</b> on iPhone & iPad, the first app in the Capybara Around the World family.</div></div>
+      <div class="tl-item"><div class="tl-year">Next</div><div class="tl-body">More Capy learning apps, and In[Neo]Sight's growth into a research publication platform.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Work -->
+<section id="work" class="wrap" style="padding-bottom:16px;">
+  <p class="eyebrow">Our Work</p>
+</section>
+
+<!-- In[Neo]Sight -->
+<section class="wrap" style="padding-bottom:56px;">
+  <div class="prod">
+    <div class="accent" style="background:linear-gradient(90deg,var(--teal),var(--mint));"></div>
+    <div class="pad">
+      <div class="ineo-mark">In<span class="neo">[Neo]</span>Sight</div>
+      <p class="ineo-tag">Neonatology Insight</p>
+      <p class="body">The scientific literature in newborn medicine is overwhelming — for new trainees, seasoned clinicians, and especially for families of critically ill infants. In[Neo]Sight is a tiered platform that explains cutting-edge studies in language each audience can readily absorb, improving both care and understanding while making it easier for new ideas to be tested.</p>
+      <p class="body">Every article is produced through a multi-agent approach designed to ensure accuracy and integrity, and reviewed by board-certified physicians. In[Neo]Sight also builds practical tools for the field, and will grow into a publication platform welcoming neonatal-perinatal research in data science, AI/LLM, and technology to improve clinical care.</p>
+      <div class="chips">
+        <span class="chip">Clinical calculators</span>
+        <span class="chip">Journal-club presentation slides</span>
+        <span class="chip">Podcasts</span>
+        <span class="chip">Board-exam question banks</span>
+        <span class="chip">Research publication platform</span>
+      </div>
+      <a class="btn ineo" href="https://inneosight.org" target="_blank" rel="noopener noreferrer">Visit In[Neo]Sight →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Capybara Around the World -->
+<section id="capy" class="wrap" style="padding-bottom:96px;">
+  <div class="capy">
+    <div class="accent" style="background:linear-gradient(90deg,#E8955A,#2E8B7A);"></div>
+    <div class="pad">
+      <span class="ribbon">🌿 On the App Store</span>
+      <h3 class="title">Capybara Around the World</h3>
+      <p class="sub">Meet <b>Capy</b> — your gentle study buddy who turns boring little moments into tiny adventures. Calm, cute, and quietly powerful.</p>
+      <p class="mission">Our mission: <b>turn boring moments into learning, every encounter into discovery.</b></p>
+      <div class="appcard">
+        <img src="Assets/wordreview.jpg" alt="Word Review app" />
+        <div class="apptext">
+          <span class="apppill">iPhone &amp; iPad · Free to start</span>
+          <h4>Word Review</h4>
+          <p>Capture words &amp; phrases you meet in real life, then review them with examples, pronunciation, and spaced repetition. 32 languages!</p>
+        </div>
+      </div>
+      <p class="note">More Capy apps are on the way. 🧳</p>
+      <a class="btn capybtn" href="https://capybaraaroundtheworld.com" target="_blank" rel="noopener noreferrer">Visit Capy's world ✨</a>
+    </div>
+  </div>
+</section>
+
+<!-- Collaborate -->
+<section id="collaborate" class="wrap" style="padding-bottom:96px;">
+  <p class="eyebrow">Collaborate</p>
+  <div class="card">
+    <div style="text-align:center;">
+      <h2 style="font-size:24px; font-weight:800; margin:0;">Have an idea? Let's build it together.</h2>
+      <p style="color:var(--muted); margin:12px 0 0;">We love working across disciplines. Tell us about your idea or the project you'd like to collaborate on, and we'll be in touch.</p>
+    </div>
+    <form action="https://formsubmit.co/contact@pxttechstudio.com" method="POST" style="margin-top:28px;">
+      <input type="hidden" name="_subject" value="New collaboration idea from PXT website" />
+      <input type="hidden" name="_captcha" value="true" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="text" name="_honey" style="display:none" />
+      <div class="row">
+        <div><label>Name</label><input type="text" name="Name" required /></div>
+        <div><label>Email</label><input type="email" name="Email" required /></div>
+      </div>
+      <div class="field">
+        <label>Which area interests you?</label>
+        <select name="Area of interest">
+          <option>In[Neo]Sight — Neonatology Insight</option>
+          <option>Capybara Around the World — learning apps</option>
+          <option>A new idea / something else</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Your background / discipline</label>
+        <input type="text" name="Background" placeholder="e.g. clinician, educator, designer, engineer" />
+      </div>
+      <div class="field">
+        <label>Your idea</label>
+        <textarea name="Idea" rows="5" required placeholder="Tell us what you'd like to work on together..."></textarea>
+      </div>
+      <button class="submit" type="submit">Send your idea</button>
+    </form>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="row">
+    <span>© <span id="yr"></span> PXT Tech Studio, LLC</span>
+    <a href="mailto:contact@pxttechstudio.com">contact@pxttechstudio.com</a>
+  </div>
+</footer>
+
+<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
