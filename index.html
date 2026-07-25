@@ -154,6 +154,50 @@
   footer.site .row{max-width:768px; margin:0 auto; padding:32px 24px; display:flex; gap:12px;
     align-items:center; justify-content:space-between; flex-wrap:wrap; color:var(--muted2); font-size:14px;}
   footer.site a:hover{color:var(--fg);}
+
+/* ===== Front-End Playground card ===== */
+:root{ --play-1:#6366f1; --play-2:#a855f7; --play-chip-bg:#eef0ff; --play-chip-fg:#4338ca; }
+@media (prefers-color-scheme: dark){
+  :root{ --play-1:#818cf8; --play-2:#c084fc; --play-chip-bg:#1e1b4b; --play-chip-fg:#c7d2fe; }
+}
+.play .play-pill{
+  display:inline-block; font-size:12px; font-weight:700; letter-spacing:.04em;
+  padding:4px 12px; border-radius:999px;
+  background:var(--play-chip-bg); color:var(--play-chip-fg);
+}
+.play .play-title{
+  font-family:"Sora",sans-serif; font-weight:700; font-size:30px;
+  margin:16px 0 0; letter-spacing:-.02em;
+  background:linear-gradient(90deg,var(--play-1),var(--play-2));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.play .play-tag{ color:var(--muted2); font-weight:600; margin:6px 0 0; }
+.play .chip.play{ background:var(--play-chip-bg); color:var(--play-chip-fg); }
+.play .btn.playbtn{ background:linear-gradient(90deg,var(--play-1),var(--play-2)); }
+.play .btn.playbtn:hover{ filter:brightness(1.08); }
+
+/* the lesson strip — 19 tiles, a quiet hint that it is interactive */
+.play-strip{ display:flex; flex-wrap:wrap; gap:6px; margin-top:26px; }
+.play-strip span{
+  flex:1 1 auto; min-width:34px; text-align:center;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-weight:600;
+  padding:7px 0; border-radius:8px;
+  background:var(--play-chip-bg); color:var(--play-chip-fg);
+  opacity:.5; transition:opacity .25s, transform .25s, background .25s, color .25s;
+}
+.play-strip:hover span{ opacity:.8; }
+.play-strip span:hover{
+  opacity:1; transform:translateY(-3px);
+  background:linear-gradient(135deg,var(--play-1),var(--play-2)); color:#fff;
+}
+@media (prefers-reduced-motion:reduce){ .play-strip span{ transition:none; } }
+
+/* the 4th nav item needs a little room on small screens */
+@media (max-width:600px){
+  header.site .bar{ gap:12px; }
+  header.site .brand span{ display:none; }
+  nav.top{ gap:14px; font-size:13px; }
+}
 </style>
 </head>
 <body>
@@ -168,6 +212,7 @@
     <nav class="top">
       <a href="#story">Our Story</a>
       <a href="#work">Our Work</a>
+      <a href="#playground">Playground</a>
       <a href="#collaborate">Collaborate</a>
     </nav>
   </div>
@@ -244,6 +289,36 @@
       </div>
       <p class="note">More Capy apps are on the way. 🧳</p>
       <a class="btn capybtn" href="https://capybaraaroundtheworld.com" target="_blank" rel="noopener noreferrer">Visit Capy's world ✨</a>
+    </div>
+  </div>
+</section>
+
+<!-- Front-End Playground -->
+<section id="playground" class="wrap" style="padding-bottom:96px;">
+  <div class="prod play">
+    <div class="accent" style="background:linear-gradient(90deg,var(--play-1),var(--play-2));"></div>
+    <div class="pad">
+      <span class="play-pill">Free · No sign-up · Open source</span>
+      <h3 class="play-title">Front-End Playground</h3>
+      <p class="play-tag">Learn to build for the web by turning knobs</p>
+      <p class="body">A free, interactive course in modern front-end development. Nineteen lessons, and
+        every single idea has controls you can move — drag a slider and watch both the result
+        <em>and the code</em> change together. No installing, no accounts, no prior experience.</p>
+      <p class="body">Built as a demonstration of the studio's own thesis: that a specialist from any
+        field can now build real technology, rather than waiting for someone to translate for them.
+        Available in English and 繁體中文.</p>
+
+      <div class="play-strip" aria-hidden="true"><span>00</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>09</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span></div>
+
+      <div class="chips">
+        <span class="chip play">19 lessons</span>
+        <span class="chip play">Flexbox &amp; Grid</span>
+        <span class="chip play">Native widgets</span>
+        <span class="chip play">Motion &amp; scroll effects</span>
+        <span class="chip play">State &amp; reactivity</span>
+        <span class="chip play">繁體中文</span>
+      </div>
+      <a class="btn playbtn" href="website-tutorial/">Open the playground →</a>
     </div>
   </div>
 </section>

@@ -1,0 +1,2925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Front-End Playground — PXT Tech Studio</title>
+<meta name="description" content="A free, interactive course in modern front-end development. 19 lessons where every idea has knobs you can turn and code that updates as you turn them. English and 繁體中文.">
+<link rel="canonical" href="https://pxttechstudio.com/website-tutorial/">
+<link rel="icon" href="../Assets/logo-day.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pxttechstudio.com/website-tutorial/">
+<meta property="og:title" content="Front-End Playground — PXT Tech Studio">
+<meta property="og:description" content="Learn modern web UI by turning knobs. 19 interactive lessons, in English and 繁體中文.">
+<meta property="og:image" content="https://pxttechstudio.com/Assets/logo2-day.png">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+/* Set the theme BEFORE first paint so there is no flash of the wrong colours. */
+(function(){
+  var t;
+  try{ t = localStorage.getItem('fep.theme'); }catch(e){}
+  if(t !== 'light' && t !== 'dark'){
+    t = (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  document.documentElement.dataset.theme = t;
+})();
+</script>
+<style>
+/* ============================================================
+   DESIGN TOKENS  —  two full palettes, one set of variable names
+   ============================================================ */
+:root{
+  --radius:14px;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+  --sans-zh:"PingFang TC","Noto Sans TC","Microsoft JhengHei","Hiragino Sans CNS",system-ui,sans-serif;
+}
+body.lang-zh{font-family:var(--sans-zh);line-height:1.85;letter-spacing:.01em;}
+body.lang-zh .code,body.lang-zh code,body.lang-zh pre{line-height:1.7;letter-spacing:0;}
+body.lang-zh h1,body.lang-zh h2,body.lang-zh h3{letter-spacing:0;line-height:1.35;}
+#lang-btn{font-weight:700;font-size:.82rem;}
+
+/* ---------- NIGHT ---------- */
+:root, :root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0e1016;
+  --bg-a:#0e1016cc;
+  --bg-soft:#141824;
+  --panel:#191e2c;
+  --panel-2:#1f2536;
+  --line:#2b3244;
+  --line-strong:#4a536b;
+  --text:#e8ecf5;
+  --text-soft:#c6cddd;
+  --muted:#98a2b8;
+  --faint:#5f6a80;
+  --accent:#7c9cff;
+  --accent-soft:#7c9cff22;
+  --accent-line:#7c9cff44;
+  --accent-2:#ff8fb1;
+  --accent-3:#5ddba0;
+  --warn:#ffc86b;
+  --on-accent:#0b0d13;
+  --glow-1:#7c9cff18;
+  --glow-2:#ff8fb114;
+  --stage-tint:#ffffff07;
+  --code-bg:#0b0d13;
+  --code-text:#c6cddd;
+  --c-sel:#ff8fb1; --c-prop:#8fd3ff; --c-val:#5ddba0;
+  --c-cm:#5f6a80;  --c-kw:#c78fff;   --c-attr:#ffc86b;
+  --shadow:0 10px 40px -12px #0009;
+}
+
+/* ---------- DAY ---------- */
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f6f8fd;
+  --bg-a:#f6f8fdd9;
+  --bg-soft:#eef1f9;
+  --panel:#ffffff;
+  --panel-2:#f2f5fc;
+  --line:#dde3f0;
+  --line-strong:#aeb8d0;
+  --text:#151a26;
+  --text-soft:#3b4358;
+  --muted:#5c6780;
+  --faint:#8a93a8;
+  --accent:#3f63f0;
+  --accent-soft:#3f63f016;
+  --accent-line:#3f63f040;
+  --accent-2:#d63b76;
+  --accent-3:#0e9b68;
+  --warn:#b0730a;
+  --on-accent:#ffffff;
+  --glow-1:#3f63f012;
+  --glow-2:#d63b7610;
+  --stage-tint:#0b0d1307;
+  --code-bg:#f1f4fc;
+  --code-text:#2b3245;
+  --c-sel:#c2185b; --c-prop:#0b62c4; --c-val:#0a7a52;
+  --c-cm:#8a93a8;  --c-kw:#7534d6;   --c-attr:#a35b00;
+  --shadow:0 10px 34px -14px #1b2a5533;
+}
+html{transition:background-color .25s ease;}
+body,.sidebar,.demo,.card,.knobs,.code,.stage,.btn,.seg button,.todo-app,.tier-badge{
+  transition:background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:16px;}
+body{
+  margin:0;
+  background:
+    radial-gradient(1000px 600px at 80% -10%, var(--glow-1), transparent 60%),
+    radial-gradient(800px 500px at 0% 20%, var(--glow-2), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{line-height:1.2;margin:0 0 .5em;letter-spacing:-.02em;}
+h1{font-size:clamp(1.9rem,4.5vw,3rem);}
+h2{font-size:clamp(1.5rem,3vw,2.1rem);}
+h3{font-size:1.15rem;}
+p{margin:0 0 1em;}
+a{color:var(--accent);}
+code{font-family:var(--mono);font-size:.87em;}
+:where(p,li) code{background:var(--panel-2);border:1px solid var(--line);padding:.1em .38em;border-radius:6px;color:var(--accent);}
+::selection{background:var(--accent);color:var(--on-accent);}
+
+/* ============================================================
+   APP SHELL — CSS Grid + sticky sidebar
+   ============================================================ */
+.app{
+  display:grid;
+  grid-template-columns:250px minmax(0,1fr);
+  gap:0;
+  max-width:1500px;
+  margin-inline:auto;
+}
+.sidebar{
+  position:sticky;top:0;align-self:start;
+  height:100dvh;overflow-y:auto;
+  padding:22px 16px 40px;
+  border-right:1px solid var(--line);
+  background:var(--bg-a);
+  backdrop-filter:blur(12px);
+  z-index:60;
+}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.bar-actions{display:flex;gap:6px;align-items:center;}
+.icon-btn{
+  font:inherit;cursor:pointer;display:grid;place-items:center;
+  width:38px;height:38px;flex:none;border-radius:50%;
+  border:1px solid var(--line);background:var(--panel);color:var(--text);
+  font-size:1rem;line-height:1;transition:.16s;
+}
+.icon-btn:hover{border-color:var(--accent);transform:translateY(-1px);}
+.icon-btn:active{transform:scale(.94);}
+/* the three-line "hamburger" — three spans that rotate into an ✕ */
+.burger{display:block;position:relative;width:18px;height:14px;}
+.burger i{
+  position:absolute;left:0;right:0;height:2px;border-radius:2px;
+  background:currentColor;
+  transition:transform .28s cubic-bezier(.4,.05,.2,1), opacity .16s linear;
+}
+.burger i:nth-child(1){top:0;}
+.burger i:nth-child(2){top:6px;}
+.burger i:nth-child(3){top:12px;}
+body.nav-open .burger i:nth-child(1){transform:translateY(6px) rotate(45deg);}
+body.nav-open .burger i:nth-child(2){opacity:0;transform:scaleX(.2);}
+body.nav-open .burger i:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+body.nav-open #menu-btn{border-color:var(--accent);color:var(--accent);}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-weight:700;letter-spacing:-.02em;}
+.brand .dot{width:11px;height:11px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 0 16px var(--accent);}
+.sidebar .tag{color:var(--muted);font-size:.78rem;margin:0 0 18px;}
+.toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;align-items:stretch;}
+.toc a{
+  display:flex;align-items:baseline;gap:9px;   /* baseline → the number sits on the first line */
+  padding:7px 10px;border-radius:9px;
+  color:var(--muted);text-decoration:none;font-size:.9rem;
+  border:1px solid transparent;
+}
+.toc a:hover{background:var(--panel);color:var(--text);}
+.toc a.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line);font-weight:600;}
+.toc .num{
+  font-family:var(--mono);font-size:.7rem;opacity:.65;
+  min-width:1.6em;text-align:right;flex:none;
+}
+.toc .grp{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin:16px 0 4px 10px;}
+.toc a.done .num::after{content:"\2022";color:var(--accent-3);margin-left:2px;}
+.nav-foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+.nav-foot button{width:100%;justify-content:center;font-size:.78rem;padding:8px 10px;}
+main{padding:0 clamp(16px,3.5vw,52px) 120px;min-width:0;}
+
+/* ---- the slide-open lesson panel (tablet + mobile) ---- */
+.nav-scrim{
+  position:fixed;inset:0;background:#0009;backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:55;
+}
+body.nav-open .nav-scrim{opacity:1;pointer-events:auto;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{padding:64px 0 26px;}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);
+  border:1px solid var(--accent-line);padding:5px 12px;border-radius:999px;margin-bottom:16px;
+}
+.hero p.lead{font-size:1.12rem;color:var(--muted);max-width:62ch;}
+.hero .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+.btn{
+  font:inherit;font-weight:600;font-size:.92rem;cursor:pointer;
+  padding:11px 20px;border-radius:11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--text);text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:transform .15s, background .15s, border-color .15s;
+}
+.btn:hover{transform:translateY(-2px);border-color:var(--accent-line);}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#9d7cff);color:var(--on-accent);border-color:transparent;}
+.btn:active{transform:translateY(0);}
+
+/* ============================================================
+   LESSON SECTIONS
+   ============================================================ */
+.lesson{
+  padding:44px 0;
+  border-top:1px solid var(--line);
+  scroll-margin-top:90px;
+}
+.lesson > p, .lesson > ul, .lesson > ol{max-width:70ch;color:var(--text-soft);}
+.lesson h2 .n{
+  font-family:var(--mono);font-size:.55em;color:var(--accent);
+  vertical-align:.4em;margin-right:.5em;opacity:.8;
+}
+.why{
+  border-left:3px solid var(--accent);
+  background:linear-gradient(90deg,var(--accent-soft),transparent 70%);
+  padding:12px 16px;border-radius:0 10px 10px 0;margin:0 0 22px;max-width:70ch;
+}
+.why strong{color:var(--accent);}
+.note{
+  border:1px dashed var(--line);border-radius:10px;padding:12px 16px;
+  color:var(--muted);font-size:.92rem;max-width:70ch;margin:18px 0;
+}
+.note b{color:var(--warn);}
+
+/* ============================================================
+   DEMO WIDGET — the reusable "knobs + stage + code" block
+   ============================================================ */
+.demo{
+  display:grid;
+  grid-template-columns:minmax(220px,270px) minmax(0,1fr);
+  gap:0;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--panel);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  margin:20px 0;
+}
+@media (max-width:760px){ .demo{grid-template-columns:1fr;} }
+.knobs{
+  padding:16px;border-right:1px solid var(--line);
+  background:var(--bg-soft);
+  display:flex;flex-direction:column;gap:14px;
+}
+@media (max-width:760px){ .knobs{border-right:0;border-bottom:1px solid var(--line);} }
+.knobs h4{
+  margin:0;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);
+}
+.knob{display:flex;flex-direction:column;gap:6px;}
+.knob > label{
+  font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;gap:8px;align-items:baseline;
+}
+.knob > label b{color:var(--accent);font-family:var(--mono);font-weight:600;font-size:.76rem;}
+.seg{display:flex;flex-wrap:wrap;gap:4px;}
+.seg button{
+  font:inherit;font-size:.74rem;font-family:var(--mono);cursor:pointer;
+  padding:5px 9px;border-radius:8px;border:1px solid var(--line);
+  background:var(--panel-2);color:var(--muted);transition:.12s;
+}
+.seg button:hover{color:var(--text);border-color:var(--accent-line);}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:600;}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+  background:var(--accent);margin-top:-6.5px;border:2px solid var(--bg-soft);
+  box-shadow:0 0 0 1px var(--accent);
+}
+input[type=range]::-moz-range-track{height:5px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border:2px solid var(--bg-soft);border-radius:50%;background:var(--accent);}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.8rem;color:var(--muted);cursor:pointer;}
+.switch input{appearance:none;width:38px;height:21px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);position:relative;cursor:pointer;transition:.18s;flex:none;}
+.switch input::after{content:"";position:absolute;inset:2px auto 2px 2px;width:15px;border-radius:50%;background:var(--muted);transition:.18s;}
+.switch input:checked{background:var(--accent);border-color:var(--accent);}
+.switch input:checked::after{left:calc(100% - 17px);background:var(--on-accent);}
+select, input[type=text], input[type=number], input[type=email]{
+  font:inherit;font-size:.82rem;padding:7px 9px;border-radius:8px;
+  background:var(--panel-2);color:var(--text);border:1px solid var(--line);width:100%;
+}
+input[type=color]{width:100%;height:32px;padding:2px;border-radius:8px;background:var(--panel-2);border:1px solid var(--line);cursor:pointer;}
+
+.stage{
+  padding:20px;min-height:230px;
+  display:flex;flex-direction:column;justify-content:center;
+  background:
+    linear-gradient(var(--stage-tint),var(--stage-tint)),
+    repeating-conic-gradient(var(--stage-tint) 0 25%, transparent 0 50%) 0 0/22px 22px;
+}
+.stage-label{
+  position:relative;z-index:1;
+  font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;
+}
+
+/* generic demo boxes */
+.box{
+  background:linear-gradient(135deg,var(--accent),#9d7cff);
+  color:var(--on-accent);font-weight:700;font-family:var(--mono);font-size:.85rem;
+  display:grid;place-items:center;border-radius:10px;
+  padding:14px;min-width:52px;
+}
+.box.b2{background:linear-gradient(135deg,var(--accent-2),#ffb17c);}
+.box.b3{background:linear-gradient(135deg,var(--accent-3),#7cffd8);}
+.box.b4{background:linear-gradient(135deg,var(--warn),#ffe07c);}
+.box.b5{background:linear-gradient(135deg,#c78fff,#8f9cff);}
+
+/* code readout */
+.code{
+  margin:0;border-top:1px solid var(--line);
+  grid-column:1/-1;
+  background:var(--code-bg);
+  padding:14px 16px;overflow-x:auto;
+  font-family:var(--mono);font-size:.8rem;line-height:1.7;
+  color:var(--code-text);white-space:pre;
+}
+.code .sel{color:var(--c-sel);}
+.code .prop{color:var(--c-prop);}
+.code .val{color:var(--c-val);}
+.code .cm{color:var(--c-cm);font-style:italic;}
+.code .tag{color:var(--c-sel);}
+.code .attr{color:var(--c-attr);}
+.code .kw{color:var(--c-kw);}
+.code .str{color:var(--c-val);}
+.code-title{
+  display:flex;gap:8px;align-items:center;color:var(--faint);font-size:.68rem;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;font-family:var(--sans);
+}
+
+/* cards / grids used by several lessons */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:18px 0;}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:16px;}
+.card h3{margin-bottom:.35em;font-size:1rem;}
+.card p{margin:0;color:var(--muted);font-size:.9rem;}
+.pill{display:inline-block;font-family:var(--mono);font-size:.7rem;padding:2px 8px;border-radius:99px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);}
+
+/* footer */
+footer{border-top:1px solid var(--line);padding:36px 0 0;color:var(--muted);font-size:.9rem;}
+
+/* skip link + focus visibility (accessibility!) */
+.skip{position:absolute;left:-9999px;}
+.skip:focus{left:12px;top:12px;z-index:99;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:10px;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- ===== PXT Tech Studio site chrome ===== -->
+<a class="pxt-bar" href="../index.html">
+  <img class="pxt-logo pxt-logo-day"   src="../Assets/logo2-day.png"   alt="" width="24" height="24">
+  <img class="pxt-logo pxt-logo-night" src="../Assets/logo2-night.png" alt="" width="24" height="24">
+  <span class="pxt-word">PXT Tech Studio</span>
+  <span class="pxt-back">Back to the studio</span>
+</a>
+<div class="app">
+
+<!-- ============ SIDEBAR NAV ============ -->
+<aside class="sidebar" id="sidebar">
+  <div class="bar">
+    <div class="brand"><span class="dot"></span> Front-End Playground</div>
+    <div class="bar-actions">
+      <button class="icon-btn" id="lang-btn" title="中文 / English" aria-label="Switch language 切換語言">中</button>
+      <button class="icon-btn" id="theme-btn" aria-label="Switch between day and night" title="Day / night">
+        <span id="theme-icon">◑</span>
+      </button>
+      <button class="icon-btn" id="menu-btn" aria-label="Open the lesson list"
+              aria-expanded="false" aria-controls="nav-panel"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span></button>
+    </div>
+  </div>
+  <p class="tag">Learn by turning knobs.</p>
+  <nav id="nav-panel">
+  <ul class="toc" id="toc">
+    <li class="grp">Start here</li>
+    <li><a href="#intro"><span class="num">00</span> The three languages</a></li>
+    <li><a href="#box"><span class="num">01</span> Everything is a box</a></li>
+    <li class="grp">Structure</li>
+    <li><a href="#anatomy"><span class="num">02</span> Anatomy of a page</a></li>
+    <li><a href="#blocks"><span class="num">03</span> The building blocks</a></li>
+    <li class="grp">Layout</li>
+    <li><a href="#flex"><span class="num">04</span> Flexbox</a></li>
+    <li><a href="#grid"><span class="num">05</span> CSS Grid</a></li>
+    <li><a href="#responsive"><span class="num">06</span> Responsive &amp; fluid</a></li>
+    <li><a href="#container"><span class="num">07</span> Container queries</a></li>
+    <li class="grp">Widgets</li>
+    <li><a href="#controls"><span class="num">08</span> Inputs &amp; controls</a></li>
+    <li><a href="#native"><span class="num">09</span> Dialogs &amp; popovers</a></li>
+    <li><a href="#forms"><span class="num">10</span> Forms that validate</a></li>
+    <li class="grp">Visual &amp; motion</li>
+    <li><a href="#visual"><span class="num">11</span> Color, depth, glass</a></li>
+    <li><a href="#motion"><span class="num">12</span> Transition &amp; animation</a></li>
+    <li><a href="#scroll"><span class="num">13</span> Scroll-driven effects</a></li>
+    <li class="grp">Interactivity</li>
+    <li><a href="#events"><span class="num">14</span> Events: page listens</a></li>
+    <li><a href="#state"><span class="num">15</span> State drives the UI</a></li>
+    <li><a href="#reactive"><span class="num">16</span> Build a reactive app</a></li>
+    <li class="grp">Modern &amp; next</li>
+    <li><a href="#modern"><span class="num">17</span> 2026 CSS superpowers</a></li>
+    <li><a href="#next"><span class="num">18</span> Cheat sheet &amp; deploy</a></li>
+  </ul>
+  <div class="nav-foot">
+    <button class="btn" id="reset-btn" title="Forget every saved setting">↺ Reset everything</button>
+  </div>
+  </nav>
+</aside>
+<div class="nav-scrim" id="nav-scrim"></div>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <span class="kicker">Interactive · No install · No prior code</span>
+  <h1>The modern web, one knob at a time.</h1>
+  <p class="lead">
+    Every box below is <em>alive</em>. Drag a slider, flip a switch, and watch both the
+    result <strong>and the code</strong> change together. That is the whole trick to learning
+    front-end: stop reading about it, start poking it.
+  </p>
+  <div class="cta">
+    <a class="btn primary" href="#intro">Start at zero →</a>
+    <a class="btn" href="#modern">Skip to the 2026 stuff</a>
+  </div>
+</header>
+
+<!-- ============ 00 INTRO ============ -->
+<section class="lesson" id="intro">
+  <h2><span class="n">00</span>Three languages, three jobs</h2>
+  <p class="why">
+    <strong>The whole web is three files talking to each other.</strong>
+    HTML says <em>what exists</em>. CSS says <em>what it looks like</em>. JavaScript says
+    <em>what happens when you touch it</em>. Nothing else you learn later changes this.
+  </p>
+
+  <div class="cards">
+    <div class="card">
+      <span class="pill">HTML</span>
+      <h3>The nouns</h3>
+      <p>Headings, buttons, images, lists. Structure and meaning — no styling opinions.</p>
+    </div>
+    <div class="card">
+      <span class="pill">CSS</span>
+      <h3>The adjectives</h3>
+      <p>Color, size, spacing, layout, motion. It decorates the nouns HTML created.</p>
+    </div>
+    <div class="card">
+      <span class="pill">JavaScript</span>
+      <h3>The verbs</h3>
+      <p>Click, type, fetch, update. It reacts to humans and changes the other two live.</p>
+    </div>
+  </div>
+
+  <p>Turn the knobs and watch one little card get built up, layer by layer:</p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Layers</h4>
+      <label class="switch">HTML — the content <input type="checkbox" id="l-html" checked></label>
+      <label class="switch">CSS — the styling <input type="checkbox" id="l-css" checked></label>
+      <label class="switch">JS — the behaviour <input type="checkbox" id="l-js" checked></label>
+      <div class="note" style="margin:6px 0 0;font-size:.78rem">
+        Turn CSS off to see what a webpage looks like naked. Every site is that, underneath.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="layer-stage"></div>
+    </div>
+    <pre class="code" id="layer-code"></pre>
+  </div>
+</section>
+
+<!-- ============ 01 BOX MODEL ============ -->
+<section class="lesson" id="box">
+  <h2><span class="n">01</span>Everything on a page is a box</h2>
+  <p class="why">
+    <strong>Nothing on a webpage is a free-floating shape.</strong> Every element is a rectangle
+    with four layers: content, then <em>padding</em> (inside space), then <em>border</em>,
+    then <em>margin</em> (outside space). Ninety percent of "why is this thing in the wrong
+    place" is a padding/margin question.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Box model</h4>
+      <div class="knob">
+        <label>padding <b id="v-pad">18px</b></label>
+        <input type="range" id="k-pad" min="0" max="60" value="18">
+      </div>
+      <div class="knob">
+        <label>border <b id="v-bor">4px</b></label>
+        <input type="range" id="k-bor" min="0" max="24" value="4">
+      </div>
+      <div class="knob">
+        <label>margin <b id="v-mar">20px</b></label>
+        <input type="range" id="k-mar" min="0" max="60" value="20">
+      </div>
+      <div class="knob">
+        <label>border-radius <b id="v-rad">12px</b></label>
+        <input type="range" id="k-rad" min="0" max="80" value="12">
+      </div>
+      <label class="switch">Show the layers <input type="checkbox" id="k-layers" checked></label>
+    </div>
+    <div class="stage" style="min-height:280px">
+      <div class="stage-label">Result</div>
+      <div id="bm-outer" style="display:grid;place-items:center;">
+        <div id="bm-margin">
+          <div id="bm-el">content</div>
+        </div>
+      </div>
+    </div>
+    <pre class="code" id="bm-code"></pre>
+  </div>
+
+  <div class="note">
+    <b>Pro tip:</b> padding grows the box <em>inwards from the edge</em> and is clickable/coloured;
+    margin is invisible space that pushes <em>other</em> boxes away. When two vertical margins meet,
+    they "collapse" into the bigger one — a classic beginner surprise.
+  </div>
+</section>
+
+<!-- ============ 02 PAGE ANATOMY ============ -->
+<section class="lesson" id="anatomy">
+  <h2><span class="n">02</span>The anatomy of a page</h2>
+  <p class="why">
+    <strong>Almost every website is the same five regions.</strong> A <em>header</em> at the top,
+    a <em>nav</em> to get around, the <em>main</em> content, an optional <em>aside</em> for
+    secondary stuff, and a <em>footer</em> at the bottom. Learn this skeleton once and you can
+    read the source of any site on the web.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Regions</h4>
+      <label class="switch">&lt;header&gt; <input type="checkbox" id="an-header" checked></label>
+      <label class="switch">&lt;nav&gt; <input type="checkbox" id="an-nav" checked></label>
+      <label class="switch">&lt;main&gt; <input type="checkbox" id="an-main" checked></label>
+      <label class="switch">&lt;aside&gt; <input type="checkbox" id="an-aside" checked></label>
+      <label class="switch">&lt;footer&gt; <input type="checkbox" id="an-footer" checked></label>
+      <h4 style="margin-top:6px">Shape</h4>
+      <div class="knob">
+        <label>where does the aside go?</label>
+        <div class="seg" data-seg="an-side">
+          <button data-v="right" aria-pressed="true">right</button>
+          <button data-v="left">left</button>
+          <button data-v="below">below (mobile)</button>
+        </div>
+      </div>
+      <label class="switch">Use plain &lt;div&gt;s instead <input type="checkbox" id="an-divs"></label>
+      <div class="note" style="margin:0;font-size:.78rem">
+        Flip that last switch: the page looks <b>identical</b>, but the meaning is gone.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="an-page" class="an-page">
+        <div class="an-box an-h" data-tag="header">header — logo, title, account</div>
+        <div class="an-box an-n" data-tag="nav">nav — links to other pages</div>
+        <div class="an-body">
+          <div class="an-box an-m" data-tag="main">main — the actual content of <em>this</em> page</div>
+          <div class="an-box an-a" data-tag="aside">aside — related links, ads, filters</div>
+        </div>
+        <div class="an-box an-f" data-tag="footer">footer — contact, legal, sitemap</div>
+      </div>
+    </div>
+    <pre class="code" id="an-code"></pre>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="pill">&lt;header&gt;</span><h3>The top band</h3>
+      <p>Logo, site title, search, sign-in. Usually identical on every page.</p></div>
+    <div class="card"><span class="pill">&lt;nav&gt;</span><h3>Getting around</h3>
+      <p>The main set of links. Screen readers offer to jump straight to it.</p></div>
+    <div class="card"><span class="pill">&lt;main&gt;</span><h3>The point of the page</h3>
+      <p>Exactly one per page, and it holds the content that is unique to this page.</p></div>
+    <div class="card"><span class="pill">&lt;aside&gt;</span><h3>Beside the point</h3>
+      <p>Related links, filters, adverts. Useful, but not the main story.</p></div>
+    <div class="card"><span class="pill">&lt;footer&gt;</span><h3>The bottom band</h3>
+      <p>Contact details, copyright, sitemap, social links.</p></div>
+    <div class="card"><span class="pill">&lt;section&gt;</span><h3>A chunk with a heading</h3>
+      <p>Each lesson on this page is a <code>&lt;section&gt;</code>. Give it a heading and it means something.</p></div>
+  </div>
+
+  <div class="note">
+    <b>Why not just use <code>&lt;div&gt;</code> for everything?</b> Because a <code>div</code> means
+    nothing. These named regions are called <em>landmarks</em>: a blind visitor can jump straight
+    to "main", Google understands your page better, and reader modes work. They cost you nothing —
+    they're the same box, with a name.
+  </div>
+</section>
+
+<!-- ============ 03 BUILDING BLOCKS ============ -->
+<section class="lesson" id="blocks">
+  <h2><span class="n">03</span>The blocks every site is made of</h2>
+  <p class="why">
+    <strong>You have seen these eight things a thousand times.</strong> Navbar, hero, columns,
+    card grid, accordion, tabs, breadcrumb, footer. Almost every page you will ever build is a
+    stack of these. Pick one and it gets built in front of you, with the code that made it.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Pick a block</h4>
+      <div class="seg blocks-seg" data-seg="bl-pick">
+        <button data-v="navbar" aria-pressed="true">Navbar</button>
+        <button data-v="hero">Hero</button>
+        <button data-v="columns">Columns</button>
+        <button data-v="cards">Card grid</button>
+        <button data-v="accordion">Accordion</button>
+        <button data-v="tabs">Tabs</button>
+        <button data-v="crumb">Breadcrumb</button>
+        <button data-v="footer">Footer</button>
+      </div>
+      <div class="note" style="margin:0;font-size:.78rem" id="bl-tip"></div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result — it's live, click it</div>
+      <div id="bl-stage" class="bl-stage"></div>
+    </div>
+    <pre class="code" id="bl-code"></pre>
+  </div>
+
+  <h3 style="margin-top:30px">Columns: the three ways</h3>
+  <p style="max-width:70ch;color:var(--text-soft)">
+    Most page layouts are just "how do I split this width?". There are only three answers you
+    need, and you can see all three below.
+  </p>
+  <div class="cards">
+    <div class="card"><span class="pill">Grid</span><h3>Fixed number of columns</h3>
+      <p>You know you want 3. <code>grid-template-columns: repeat(3, 1fr)</code>.</p></div>
+    <div class="card"><span class="pill">Grid</span><h3>As many as will fit</h3>
+      <p>You don't care how many. <code>repeat(auto-fit, minmax(220px, 1fr))</code>.</p></div>
+    <div class="card"><span class="pill">Flex</span><h3>Sidebar plus content</h3>
+      <p>One fixed, one flexible. <code>grid-template-columns: 260px 1fr</code>.</p></div>
+  </div>
+
+  <div class="note">
+    <b>The accordion, for free:</b> the block above is built from <code>&lt;details&gt;</code> —
+    no JavaScript, keyboard accessible, and findable with Ctrl+F. The tabs use radio buttons and
+    <code>:checked</code>, so they need no JavaScript either. Reach for the platform first.
+  </div>
+</section>
+
+<style>
+/* ---- page anatomy ---- */
+.an-page{display:flex;flex-direction:column;gap:8px;font-size:.78rem;}
+.an-box{
+  border-radius:9px;padding:12px 14px;border:1px dashed transparent;
+  display:flex;align-items:center;justify-content:center;text-align:center;min-height:46px;
+  transition:.22s;
+}
+.an-box::before{
+  content:attr(data-tag);font-family:var(--mono);font-size:.66rem;
+  background:var(--on-accent);color:var(--accent);opacity:.85;
+  padding:1px 7px;border-radius:99px;margin-right:9px;flex:none;
+}
+.an-page.plain .an-box::before{content:"div";}
+.an-h{background:var(--accent-soft);border-color:var(--accent);color:var(--text);}
+.an-n{background:var(--accent-soft);border-color:var(--accent-line);color:var(--text);}
+.an-m{background:linear-gradient(135deg,var(--accent),#9d7cff);color:var(--on-accent);flex:1;font-weight:600;}
+.an-a{background:linear-gradient(135deg,var(--accent-2),#ffb17c);color:var(--on-accent);flex:none;width:34%;}
+.an-f{background:var(--panel-2);border-color:var(--line-strong);color:var(--muted);}
+.an-body{display:flex;gap:8px;min-height:96px;}
+.an-body.left{flex-direction:row-reverse;}
+.an-body.below{flex-direction:column;}
+.an-body.below .an-a{width:auto;}
+.an-box.off{display:none;}
+
+/* ---- building blocks ---- */
+.blocks-seg{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.blocks-seg button{text-align:center;}
+.bl-stage{border:1px dashed var(--line-strong);border-radius:12px;padding:12px;background:var(--panel);}
+.bl-stage *{box-sizing:border-box;}
+
+.d-nav{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);}
+.d-nav .logo{font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:7px;}
+.d-nav .logo i{width:9px;height:9px;border-radius:50%;background:var(--accent);display:block;}
+.d-nav ul{list-style:none;display:flex;gap:4px;margin:0;padding:0;margin-left:auto;flex-wrap:wrap;}
+.d-nav a{color:var(--muted);text-decoration:none;font-size:.85rem;padding:6px 10px;border-radius:8px;}
+.d-nav a:hover,.d-nav a[aria-current]{background:var(--accent-soft);color:var(--accent);}
+
+.d-hero{text-align:center;padding:26px 18px;border-radius:12px;background:linear-gradient(135deg,var(--accent-soft),transparent);border:1px solid var(--line);}
+.d-hero h3{margin:0 0 6px;font-size:clamp(1.1rem,3.4vw,1.7rem);}
+.d-hero p{margin:0 0 14px;color:var(--muted);font-size:.88rem;}
+
+.d-cols{display:grid;gap:10px;grid-template-columns:1fr;}
+@media (min-width:520px){ .d-cols{grid-template-columns:220px 1fr;} }
+.d-cols > div{padding:16px;border-radius:10px;font-size:.82rem;}
+.d-cols .side{background:var(--panel-2);border:1px solid var(--line);color:var(--muted);}
+.d-cols .body{background:var(--accent-soft);border:1px solid var(--accent-line);}
+
+.d-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;}
+.d-cards article{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:12px;font-size:.8rem;transition:.2s;}
+.d-cards article:hover{transform:translateY(-3px);border-color:var(--accent);}
+.d-cards .thumb{height:52px;border-radius:8px;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),#9d7cff);display:grid;place-items:center;font-size:1.3rem;}
+
+.d-acc{display:grid;gap:6px;}
+.d-acc details{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:10px 13px;}
+.d-acc summary{cursor:pointer;font-weight:600;font-size:.88rem;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+.d-acc summary::after{content:"+";font-family:var(--mono);color:var(--accent);transition:transform .2s;}
+.d-acc details[open] summary::after{transform:rotate(45deg);}
+.d-acc p{margin:8px 0 0;font-size:.83rem;color:var(--muted);}
+
+.d-tabs{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel-2);}
+.d-tabs .strip{display:flex;border-bottom:1px solid var(--line);}
+.d-tabs input{position:absolute;opacity:0;pointer-events:none;}
+.d-tabs label{flex:1;text-align:center;padding:10px;font-size:.84rem;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:.18s;}
+.d-tabs label:hover{color:var(--text);}
+.d-tabs .panel{display:none;padding:16px;font-size:.85rem;color:var(--muted);}
+.d-tabs:has(#tb1:checked) label[for=tb1],
+.d-tabs:has(#tb2:checked) label[for=tb2],
+.d-tabs:has(#tb3:checked) label[for=tb3]{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+.d-tabs:has(#tb1:checked) #tp1,
+.d-tabs:has(#tb2:checked) #tp2,
+.d-tabs:has(#tb3:checked) #tp3{display:block;}
+
+.d-crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.84rem;padding:4px 2px;}
+.d-crumb a{color:var(--muted);text-decoration:none;}
+.d-crumb a:hover{color:var(--accent);text-decoration:underline;}
+.d-crumb span[aria-current]{color:var(--text);font-weight:600;}
+.d-crumb .sep{color:var(--faint);}
+
+.d-foot{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));padding:16px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);font-size:.8rem;}
+.d-foot h4{margin:0 0 6px;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+.d-foot ul{list-style:none;margin:0;padding:0;display:grid;gap:3px;}
+.d-foot a{color:var(--muted);text-decoration:none;}
+.d-foot a:hover{color:var(--accent);}
+.d-foot .legal{grid-column:1/-1;border-top:1px solid var(--line);padding-top:10px;color:var(--faint);}
+</style>
+
+<!-- ============ 04 FLEXBOX ============ -->
+<section class="lesson" id="flex">
+  <h2><span class="n">04</span>Flexbox — arranging things in a line</h2>
+  <p class="why">
+    <strong>Flexbox lays boxes out along one axis.</strong> You pick a direction (a row or a column),
+    then say how the leftover space should be shared. Navbars, toolbars, button groups, centring
+    anything — that's flexbox. It's the single most-used layout tool on the web.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Container</h4>
+      <div class="knob">
+        <label>flex-direction</label>
+        <div class="seg" data-seg="fx-dir">
+          <button data-v="row" aria-pressed="true">row</button>
+          <button data-v="row-reverse">row-reverse</button>
+          <button data-v="column">column</button>
+        </div>
+      </div>
+      <div class="knob">
+        <label>justify-content <span style="opacity:.6">(main axis)</span></label>
+        <div class="seg" data-seg="fx-jc">
+          <button data-v="flex-start" aria-pressed="true">start</button>
+          <button data-v="center">center</button>
+          <button data-v="flex-end">end</button>
+          <button data-v="space-between">space-between</button>
+          <button data-v="space-around">space-around</button>
+          <button data-v="space-evenly">space-evenly</button>
+        </div>
+      </div>
+      <div class="knob">
+        <label>align-items <span style="opacity:.6">(cross axis)</span></label>
+        <div class="seg" data-seg="fx-ai">
+          <button data-v="stretch" aria-pressed="true">stretch</button>
+          <button data-v="flex-start">start</button>
+          <button data-v="center">center</button>
+          <button data-v="flex-end">end</button>
+        </div>
+      </div>
+      <div class="knob">
+        <label>gap <b id="v-fxgap">12px</b></label>
+        <input type="range" id="k-fxgap" min="0" max="48" value="12">
+      </div>
+      <label class="switch">flex-wrap <input type="checkbox" id="k-fxwrap"></label>
+      <h4 style="margin-top:6px">Item 2 only</h4>
+      <div class="knob">
+        <label>flex-grow <b id="v-fxgrow">0</b></label>
+        <input type="range" id="k-fxgrow" min="0" max="3" value="0">
+      </div>
+      <div class="knob">
+        <label>align-self</label>
+        <div class="seg" data-seg="fx-as">
+          <button data-v="auto" aria-pressed="true">auto</button>
+          <button data-v="flex-start">start</button>
+          <button data-v="center">center</button>
+          <button data-v="flex-end">end</button>
+        </div>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result <span style="text-transform:none;letter-spacing:0">— the dashed box is the flex container</span></div>
+      <div id="fx-box" style="border:1px dashed var(--line-strong);border-radius:12px;padding:12px;min-height:190px;display:flex;">
+        <div class="box">1</div>
+        <div class="box b2" id="fx-item2">2</div>
+        <div class="box b3">3</div>
+        <div class="box b4">4</div>
+        <div class="box b5">5</div>
+      </div>
+    </div>
+    <pre class="code" id="fx-code"></pre>
+  </div>
+
+  <div class="note">
+    <b>The one-line trick:</b> <code>display:flex; justify-content:center; align-items:center;</code>
+    centres anything, horizontally and vertically. This used to be a famously hard problem.
+  </div>
+</section>
+
+<!-- ============ 03 GRID ============ -->
+<section class="lesson" id="grid">
+  <h2><span class="n">05</span>CSS Grid — arranging things in two directions</h2>
+  <p class="why">
+    <strong>Grid is flexbox's two-dimensional sibling.</strong> You define columns and rows up front,
+    then drop items into the cells. Page layouts, dashboards, photo galleries, magazine spreads.
+    Rule of thumb: <em>flexbox for a line of things, grid for a layout.</em>
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Grid container</h4>
+      <div class="knob">
+        <label>columns <b id="v-gcols">3</b></label>
+        <input type="range" id="k-gcols" min="1" max="6" value="3">
+      </div>
+      <div class="knob">
+        <label>gap <b id="v-ggap">12px</b></label>
+        <input type="range" id="k-ggap" min="0" max="40" value="12">
+      </div>
+      <div class="knob">
+        <label>column sizing</label>
+        <div class="seg" data-seg="g-mode">
+          <button data-v="equal" aria-pressed="true">1fr each</button>
+          <button data-v="sidebar">200px + 1fr</button>
+          <button data-v="auto">auto-fit</button>
+        </div>
+      </div>
+      <h4 style="margin-top:6px">The pink item</h4>
+      <div class="knob">
+        <label>column span <b id="v-gspan">1</b></label>
+        <input type="range" id="k-gspan" min="1" max="4" value="1">
+      </div>
+      <div class="knob">
+        <label>row span <b id="v-grspan">1</b></label>
+        <input type="range" id="k-grspan" min="1" max="3" value="1">
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="g-box" style="display:grid;border:1px dashed var(--line-strong);border-radius:12px;padding:12px;">
+        <div class="box">1</div>
+        <div class="box b2" id="g-hero">2</div>
+        <div class="box b3">3</div>
+        <div class="box b4">4</div>
+        <div class="box b5">5</div>
+        <div class="box">6</div>
+        <div class="box b3">7</div>
+        <div class="box b4">8</div>
+      </div>
+    </div>
+    <pre class="code" id="g-code"></pre>
+  </div>
+
+  <div class="note">
+    <b>The magic value:</b> <code>fr</code> means "one share of the free space". And
+    <code>repeat(auto-fit, minmax(200px, 1fr))</code> builds a gallery that reflows itself at
+    every screen size — <em>with no media queries at all</em>. Try the auto-fit button, then
+    make your browser window narrower.
+  </div>
+</section>
+
+<!-- ============ 04 RESPONSIVE ============ -->
+<section class="lesson" id="responsive">
+  <h2><span class="n">06</span>Responsive: one page, every screen</h2>
+  <p class="why">
+    <strong>You don't build a mobile site and a desktop site.</strong> You build one page that
+    bends. Two ideas do most of the work: <em>fluid units</em> that scale continuously, and
+    <em>media queries</em> that snap to a different layout past a certain width.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Pretend screen width</h4>
+      <div class="knob">
+        <label>viewport <b id="v-vw">900px</b></label>
+        <input type="range" id="k-vw" min="320" max="1100" value="900">
+      </div>
+      <div class="knob">
+        <label>device preset</label>
+        <div class="seg" data-seg="rw-preset">
+          <button data-v="360">📱 phone</button>
+          <button data-v="768">📲 tablet</button>
+          <button data-v="1100" aria-pressed="true">🖥 desktop</button>
+        </div>
+      </div>
+      <div class="note" style="margin:0;font-size:.78rem">
+        The layout below switches at <b>700px</b> — that's a media query firing. The heading
+        size uses <code>clamp()</code>, so it slides smoothly instead of jumping.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="rw-frame" style="margin-inline:auto;border:2px solid var(--line-strong);border-radius:14px;overflow:hidden;background:var(--bg-soft);transition:width .18s ease;">
+        <div id="rw-inner" style="padding:14px;">
+          <div id="rw-title" style="font-weight:800;margin-bottom:10px;letter-spacing:-.02em;">Fluid heading</div>
+          <div id="rw-layout" style="display:grid;gap:10px;">
+            <div class="box" style="padding:22px">main</div>
+            <div class="box b2" style="padding:22px">side</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.78rem;margin-top:10px" id="rw-status"></div>
+    </div>
+    <pre class="code" id="rw-code"></pre>
+  </div>
+
+  <div class="cards">
+    <div class="card"><span class="pill">%</span><h3>Relative to the parent</h3><p><code>width:50%</code> — half of whatever contains it.</p></div>
+    <div class="card"><span class="pill">rem</span><h3>Relative to root font size</h3><p>The safe unit for text and spacing. Respects the user's browser font setting.</p></div>
+    <div class="card"><span class="pill">vw / dvh</span><h3>Relative to the screen</h3><p><code>100dvh</code> = full viewport height, correctly, even with mobile browser bars.</p></div>
+    <div class="card"><span class="pill">clamp()</span><h3>min, ideal, max</h3><p><code>clamp(1rem, 4vw, 3rem)</code> — grows with the screen but never gets silly.</p></div>
+  </div>
+</section>
+
+<!-- ============ 05 CONTAINER QUERIES ============ -->
+<section class="lesson" id="container">
+  <h2><span class="n">07</span>Container queries — the modern upgrade</h2>
+  <p class="why">
+    <strong>This is the big shift of the last few years.</strong> A media query asks "how wide is
+    the <em>screen</em>?" A container query asks "how wide is the <em>space I was dropped into</em>?"
+    That means one component can be genuinely reusable: put it in a sidebar and it goes compact,
+    put it in a main column and it goes wide — no page-level knowledge required.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Drop the same card in…</h4>
+      <div class="knob">
+        <label>slot width <b id="v-cq">520px</b></label>
+        <input type="range" id="k-cq" min="180" max="640" value="520">
+      </div>
+      <div class="note" style="margin:0;font-size:.78rem">
+        The card's CSS is <b>identical</b> in both slots. It rearranges itself purely from
+        the width it was given. Below 380px it stacks and hides the blurb.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="cq-slot" style="container-type:inline-size;border:1px dashed var(--line-strong);border-radius:12px;padding:10px;">
+        <article class="cq-card">
+          <div class="cq-thumb">🦫</div>
+          <div class="cq-body">
+            <h3 style="margin:0 0 4px;font-size:1rem">Capybara Weekly</h3>
+            <p class="cq-blurb" style="margin:0;color:var(--muted);font-size:.85rem">
+              The world's chillest rodent, delivered to your inbox every Thursday.
+            </p>
+            <span class="pill" style="margin-top:8px">Subscribe</span>
+          </div>
+        </article>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.78rem;margin-top:10px" id="cq-status"></div>
+    </div>
+    <pre class="code" id="cq-code"></pre>
+  </div>
+</section>
+
+<style>
+/* real container-query CSS powering the demo above */
+.cq-card{display:flex;gap:14px;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:12px;}
+.cq-thumb{font-size:2rem;background:var(--accent-soft);border-radius:10px;display:grid;place-items:center;width:72px;height:72px;flex:none;}
+@container (max-width: 380px){
+  .cq-card{flex-direction:column;align-items:flex-start;text-align:left;}
+  .cq-blurb{display:none;}
+  .cq-thumb{width:100%;height:52px;}
+}
+</style>
+
+<!-- ============ 06 CONTROLS ============ -->
+<section class="lesson" id="controls">
+  <h2><span class="n">08</span>Inputs &amp; controls — the browser gives you a lot for free</h2>
+  <p class="why">
+    <strong>Before you install a component library, check what's already built in.</strong>
+    Modern browsers ship sliders, colour pickers, date pickers, search boxes, switches and
+    progress bars — all accessible, keyboard-friendly and translated into every language,
+    at zero cost. Below is a working control panel using nothing but native HTML.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Native controls</h4>
+      <div class="knob">
+        <label>range <b id="v-c1">45</b></label>
+        <input type="range" id="c-range" min="0" max="100" value="45">
+      </div>
+      <div class="knob">
+        <label>color</label>
+        <input type="color" id="c-color" value="#7c9cff">
+      </div>
+      <div class="knob">
+        <label>select</label>
+        <select id="c-select">
+          <option value="Inter">Inter-ish (system)</option>
+          <option value="Georgia">Georgia (serif)</option>
+          <option value="monospace">Monospace</option>
+        </select>
+      </div>
+      <div class="knob">
+        <label>text</label>
+        <input type="text" id="c-text" value="Hello, world" maxlength="24">
+      </div>
+      <label class="switch">checkbox as a switch <input type="checkbox" id="c-switch" checked></label>
+      <div class="knob">
+        <label>datalist (typeahead)</label>
+        <input type="text" id="c-list" list="fruits" placeholder="type 'ba'…">
+        <datalist id="fruits">
+          <option>Banana</option><option>Blackberry</option><option>Blueberry</option>
+          <option>Apple</option><option>Apricot</option><option>Cherry</option>
+        </datalist>
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="c-preview" style="display:grid;gap:12px;place-items:center;text-align:center;">
+        <div id="c-blob" style="width:110px;height:110px;border-radius:26px;transition:.25s;"></div>
+        <div id="c-msg" style="font-weight:700;font-size:1.3rem;"></div>
+        <progress id="c-prog" max="100" value="45" style="width:70%"></progress>
+        <div style="color:var(--muted);font-size:.8rem" id="c-echo"></div>
+      </div>
+    </div>
+    <pre class="code" id="c-code"></pre>
+  </div>
+
+  <div class="note">
+    <b>Accessibility, free:</b> because these are real <code>&lt;input&gt;</code> elements, they
+    already work with the Tab key, screen readers, voice control and browser autofill. A
+    <code>&lt;div&gt;</code> pretending to be a slider does none of that. Try tabbing through the
+    panel above with your keyboard.
+  </div>
+</section>
+
+<!-- ============ 07 NATIVE WIDGETS ============ -->
+<section class="lesson" id="native">
+  <h2><span class="n">09</span>Dialogs, popovers &amp; disclosure — no library needed</h2>
+  <p class="why">
+    <strong>Modals used to take 200 lines of JavaScript.</strong> Now <code>&lt;dialog&gt;</code>,
+    the <code>popover</code> attribute and <code>&lt;details&gt;</code> handle focus trapping,
+    Escape-to-close, click-outside and stacking for you. This is some of the newest, most
+    useful stuff in the platform.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Try each one</h4>
+      <button class="btn" id="open-dialog" style="justify-content:center">Open a &lt;dialog&gt;</button>
+      <button class="btn" popovertarget="my-popover" style="justify-content:center">Toggle a popover</button>
+      <button class="btn" id="open-toast" style="justify-content:center">Fire a toast</button>
+      <div class="note" style="margin:0;font-size:.78rem">
+        The dialog traps focus and closes on <b>Escape</b> — you didn't write that. The popover
+        closes when you click anywhere outside — you didn't write that either.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div style="display:grid;gap:14px;">
+        <details class="disclosure">
+          <summary>What is a disclosure widget?</summary>
+          <p style="margin:10px 0 0;color:var(--muted);font-size:.9rem">
+            <code>&lt;details&gt;</code> + <code>&lt;summary&gt;</code> is a native show/hide.
+            It's searchable by Ctrl+F, it's keyboard accessible, and it animates now that
+            browsers support <code>interpolate-size</code>. FAQ sections, done.
+          </p>
+        </details>
+        <details class="disclosure">
+          <summary>Can I style it?</summary>
+          <p style="margin:10px 0 0;color:var(--muted);font-size:.9rem">
+            Yes — <code>details[open]</code> lets you restyle the open state, and
+            <code>::details-content</code> lets you animate the reveal.
+          </p>
+        </details>
+        <div id="popover-anchor">
+          <div id="my-popover" popover>
+            <strong>I'm a popover.</strong>
+            <p style="margin:6px 0 0;font-size:.85rem;color:var(--muted)">
+              Rendered in the browser's top layer, so I'm never trapped behind
+              <code>overflow:hidden</code>. Click anywhere else to dismiss me.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <pre class="code" id="nw-code"></pre>
+  </div>
+
+  <dialog id="my-dialog">
+    <h3 style="margin-top:0">A real modal dialog</h3>
+    <p style="color:var(--muted);font-size:.92rem">
+      Focus is trapped in here. Escape closes me. The page behind is inert. All of that is
+      one HTML element plus <code>.showModal()</code>.
+    </p>
+    <form method="dialog" style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn" value="cancel">Cancel</button>
+      <button class="btn primary" value="ok">Got it</button>
+    </form>
+  </dialog>
+  <div id="toast-region" aria-live="polite"></div>
+</section>
+
+<!-- ============ 08 FORMS ============ -->
+<section class="lesson" id="forms">
+  <h2><span class="n">10</span>Forms that validate themselves</h2>
+  <p class="why">
+    <strong>The browser is a validation engine you already own.</strong> Mark a field
+    <code>required</code>, give it <code>type="email"</code> or a <code>pattern</code>, and CSS
+    can style the valid/invalid states with <code>:user-valid</code> — which politely waits
+    until the user has actually finished typing before shouting at them.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Validation style</h4>
+      <div class="knob">
+        <label>feedback timing</label>
+        <div class="seg" data-seg="fv-mode">
+          <button data-v="user" aria-pressed="true">:user-valid (kind)</button>
+          <button data-v="eager">:valid (eager)</button>
+        </div>
+      </div>
+      <label class="switch">Live strength meter <input type="checkbox" id="fv-meter" checked></label>
+      <div class="note" style="margin:0;font-size:.78rem">
+        Switch to "eager" and start typing an email — it turns angry red on the first keystroke.
+        That's why <code>:user-valid</code> exists.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <form id="demo-form" class="mode-user" novalidate style="display:grid;gap:12px;max-width:420px;margin-inline:auto;width:100%">
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" type="email" required placeholder="you@example.com">
+          <span class="hint">Needs an @ and a domain.</span>
+        </div>
+        <div class="field">
+          <label for="f-pass">Password</label>
+          <input id="f-pass" type="password" required minlength="8" placeholder="at least 8 characters">
+          <div id="pw-meter" class="meter"><span></span></div>
+          <span class="hint" id="pw-hint">8+ characters.</span>
+        </div>
+        <button class="btn primary" type="submit" style="justify-content:center">Create account</button>
+        <output id="f-out" style="font-size:.85rem;color:var(--accent-3);text-align:center"></output>
+      </form>
+    </div>
+    <pre class="code" id="fv-code"></pre>
+  </div>
+</section>
+
+<!-- ============ 09 VISUAL ============ -->
+<section class="lesson" id="visual">
+  <h2><span class="n">11</span>Colour, depth &amp; glass</h2>
+  <p class="why">
+    <strong>Visual polish is mostly four properties.</strong> Gradients for colour interest,
+    <code>box-shadow</code> for depth, <code>backdrop-filter</code> for that frosted-glass
+    look, and <code>border-radius</code> for softness. Turn the knobs until it looks like an
+    app you'd want to use.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Surface designer</h4>
+      <div class="knob">
+        <label>hue <b id="v-hue">225</b></label>
+        <input type="range" id="k-hue" min="0" max="360" value="225">
+      </div>
+      <div class="knob">
+        <label>radius <b id="v-vrad">20px</b></label>
+        <input type="range" id="k-vrad" min="0" max="60" value="20">
+      </div>
+      <div class="knob">
+        <label>shadow depth <b id="v-shadow">24</b></label>
+        <input type="range" id="k-shadow" min="0" max="60" value="24">
+      </div>
+      <div class="knob">
+        <label>glass blur <b id="v-blur">10px</b></label>
+        <input type="range" id="k-blur" min="0" max="26" value="10">
+      </div>
+      <div class="knob">
+        <label>gradient angle <b id="v-ang">135deg</b></label>
+        <input type="range" id="k-ang" min="0" max="360" value="135">
+      </div>
+      <label class="switch">Glass mode <input type="checkbox" id="k-glass" checked></label>
+    </div>
+    <div class="stage" id="v-stage" style="position:relative;overflow:hidden;">
+      <div class="stage-label">Result</div>
+      <div id="v-backdrop"></div>
+      <div id="v-card">
+        <div style="font-size:1.6rem">✨</div>
+        <h3 style="margin:6px 0 2px">Surface</h3>
+        <p style="margin:0;font-size:.85rem;opacity:.8">Every app UI is this, repeated.</p>
+      </div>
+    </div>
+    <pre class="code" id="v-code"></pre>
+  </div>
+</section>
+
+<!-- ============ 10 MOTION ============ -->
+<section class="lesson" id="motion">
+  <h2><span class="n">12</span>Transition &amp; animation</h2>
+  <p class="why">
+    <strong>A transition is CSS saying "don't jump — glide."</strong> You change a value, and the
+    browser fills in every frame between the old and new. Timing and easing are what separate
+    "cheap" from "expensive-feeling". Under ~150ms feels twitchy; over ~500ms feels sluggish.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Timing</h4>
+      <div class="knob">
+        <label>duration <b id="v-dur">400ms</b></label>
+        <input type="range" id="k-dur" min="0" max="1600" step="50" value="400">
+      </div>
+      <div class="knob">
+        <label>easing</label>
+        <div class="seg" data-seg="m-ease">
+          <button data-v="linear">linear</button>
+          <button data-v="ease" aria-pressed="true">ease</button>
+          <button data-v="ease-in-out">ease-in-out</button>
+          <button data-v="cubic-bezier(.34,1.56,.64,1)">springy</button>
+        </div>
+      </div>
+      <div class="knob">
+        <label>what changes</label>
+        <div class="seg" data-seg="m-prop">
+          <button data-v="move" aria-pressed="true">position</button>
+          <button data-v="scale">scale</button>
+          <button data-v="rotate">rotate</button>
+          <button data-v="all">everything</button>
+        </div>
+      </div>
+      <button class="btn primary" id="m-go" style="justify-content:center">▶ Play</button>
+      <label class="switch">Keyframe loop <input type="checkbox" id="k-loop"></label>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result — click Play, or click the ball</div>
+      <div id="m-track" style="border:1px dashed var(--line-strong);border-radius:12px;padding:16px;display:flex;align-items:center;min-height:150px;">
+        <div id="m-ball" class="box" style="width:64px;height:64px;border-radius:50%;cursor:pointer;">go</div>
+      </div>
+    </div>
+    <pre class="code" id="m-code"></pre>
+  </div>
+
+  <div class="note">
+    <b>Performance rule:</b> animate <code>transform</code> and <code>opacity</code>. The GPU
+    handles those without re-doing layout. Animating <code>width</code>, <code>top</code> or
+    <code>margin</code> forces the browser to recalculate the whole page every frame — that's
+    where jank comes from.
+  </div>
+</section>
+
+<!-- ============ 11 SCROLL ============ -->
+<section class="lesson" id="scroll">
+  <h2><span class="n">13</span>Scroll-driven effects</h2>
+  <p class="why">
+    <strong>Scroll position is now an animation timeline.</strong> Things that used to need a
+    JavaScript library — progress bars, reveal-on-scroll, parallax, scroll-snapping carousels —
+    are CSS one-liners in modern browsers, and they run on the compositor so they never stutter.
+  </p>
+
+  <p><b>1. Scroll progress.</b> That bar pinned to the top of your window is
+  <code>animation-timeline: scroll()</code> — three lines of CSS, no JS.</p>
+
+  <p><b>2. Reveal on scroll.</b> These cards fade and rise as they enter the viewport, driven by
+  <code>animation-timeline: view()</code>:</p>
+
+  <div class="cards reveal-group">
+    <div class="card reveal"><h3>🎯 Enter</h3><p>Animation is tied to <em>how far into view</em> the element is — not to a timer.</p></div>
+    <div class="card reveal"><h3>⚡️ Smooth</h3><p>Runs off the main thread, so it stays at 60fps while JavaScript is busy.</p></div>
+    <div class="card reveal"><h3>♿️ Respectful</h3><p>All of it is disabled automatically if the visitor asked for reduced motion.</p></div>
+  </div>
+
+  <p><b>3. Scroll snap.</b> Drag this sideways — it locks neatly to each panel, again pure CSS:</p>
+  <div class="snap-row">
+    <div class="snap-item box">1</div>
+    <div class="snap-item box b2">2</div>
+    <div class="snap-item box b3">3</div>
+    <div class="snap-item box b4">4</div>
+    <div class="snap-item box b5">5</div>
+  </div>
+
+  <div class="note">
+    <b>Fallback thinking:</b> in a browser that doesn't support scroll timelines, these elements
+    simply appear normally. That's <em>progressive enhancement</em> — the site works everywhere,
+    and gets nicer where it can.
+  </div>
+</section>
+
+<style>
+/* ---- lesson-specific styles ---- */
+.disclosure{border:1px solid var(--line);background:var(--panel-2);border-radius:10px;padding:12px 14px;}
+.disclosure summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.disclosure summary::after{content:"+";font-family:var(--mono);color:var(--accent);transition:transform .2s;}
+.disclosure[open] summary::after{transform:rotate(45deg);}
+
+#my-popover{
+  max-width:320px;
+  background:var(--panel-2);color:var(--text);border:1px solid var(--accent-line);
+  border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);
+}
+#my-popover::backdrop{background:#0006;}
+dialog{
+  border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);
+  padding:24px;max-width:440px;box-shadow:var(--shadow);
+}
+dialog::backdrop{background:#000a;backdrop-filter:blur(3px);}
+#toast-region{position:fixed;bottom:20px;right:20px;display:grid;gap:8px;z-index:99;}
+.toast{
+  background:var(--panel-2);border:1px solid var(--accent);border-left-width:4px;
+  padding:12px 16px;border-radius:10px;box-shadow:var(--shadow);font-size:.9rem;
+  animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes toastIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+
+/* forms */
+.field{display:grid;gap:5px;}
+.field label{font-size:.8rem;color:var(--muted);}
+.field .hint{font-size:.74rem;color:var(--faint);}
+.mode-user input:user-invalid, .mode-eager input:invalid{border-color:var(--accent-2);background:#ff8fb112;}
+.mode-user input:user-valid,   .mode-eager input:valid{border-color:var(--accent-3);background:#5ddba012;}
+.mode-user input:user-invalid + .hint, .mode-eager input:invalid ~ .hint{color:var(--accent-2);}
+.meter{height:6px;border-radius:99px;background:var(--panel-2);border:1px solid var(--line);overflow:hidden;}
+.meter span{display:block;height:100%;width:0;background:var(--accent-2);transition:width .25s, background .25s;}
+
+/* visual designer */
+#v-backdrop{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(300px 200px at 20% 30%, #ff8fb1aa, transparent 60%),
+    radial-gradient(320px 220px at 80% 70%, #5ddba0aa, transparent 60%),
+    repeating-linear-gradient(45deg,var(--stage-tint) 0 12px,transparent 12px 24px);
+}
+#v-card{position:relative;align-self:center;padding:26px 30px;text-align:center;min-width:200px;}
+
+/* motion */
+#m-ball{transition-property:transform;}
+@keyframes loopy{
+  0%{transform:translateX(0) rotate(0) scale(1)}
+  50%{transform:translateX(120px) rotate(180deg) scale(1.25)}
+  100%{transform:translateX(0) rotate(360deg) scale(1)}
+}
+#m-ball.looping{animation:loopy 2.4s ease-in-out infinite;}
+
+/* scroll-driven */
+.scroll-progress{
+  position:fixed;top:0;left:0;right:0;height:3px;z-index:100;transform-origin:0 50%;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+  transform:scaleX(0);
+}
+@supports (animation-timeline: scroll()){
+  .scroll-progress{animation:growBar linear;animation-timeline:scroll(root);}
+  @keyframes growBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  .reveal{animation:revealIn linear both;animation-timeline:view();animation-range:entry 5% cover 35%;}
+  @keyframes revealIn{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+}
+.snap-row{
+  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:12px;border:1px dashed var(--line-strong);border-radius:12px;margin:14px 0;
+  scrollbar-width:thin;
+}
+.snap-item{scroll-snap-align:center;flex:0 0 min(240px,70%);height:120px;font-size:1.6rem;}
+</style>
+
+<!-- ============ 12 EVENTS ============ -->
+<section class="lesson" id="events">
+  <h2><span class="n">14</span>Events — how a page listens</h2>
+  <p class="why">
+    <strong>JavaScript is mostly waiting.</strong> You tell the browser "when <em>this</em>
+    happens to <em>that</em> element, run <em>this</em> function". Clicks, typing, hovering,
+    scrolling, resizing — every interactive thing you've ever used is that one pattern,
+    repeated.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Listen for…</h4>
+      <label class="switch">click <input type="checkbox" class="ev-on" id="ev-c1" value="click" checked></label>
+      <label class="switch">dblclick <input type="checkbox" class="ev-on" id="ev-c2" value="dblclick"></label>
+      <label class="switch">pointermove <input type="checkbox" class="ev-on" id="ev-c3" value="pointermove"></label>
+      <label class="switch">pointerenter / leave <input type="checkbox" class="ev-on" id="ev-c4" value="hover" checked></label>
+      <label class="switch">keydown <input type="checkbox" class="ev-on" id="ev-c5" value="keydown" checked></label>
+      <button class="btn" id="ev-clear" style="justify-content:center">Clear log</button>
+      <div class="note" style="margin:0;font-size:.78rem">
+        Interact with the panel on the right. Click it, hover it, focus it and press a key.
+      </div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="ev-target" tabindex="0" style="border:1px dashed var(--line-strong);border-radius:12px;min-height:110px;display:grid;place-items:center;color:var(--muted);cursor:crosshair;user-select:none;">
+        interact with me
+      </div>
+      <div id="ev-log" style="font-family:var(--mono);font-size:.74rem;margin-top:10px;height:110px;overflow:auto;background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--c-prop)"></div>
+    </div>
+    <pre class="code" id="ev-code"></pre>
+  </div>
+</section>
+
+<!-- ============ 13 STATE ============ -->
+<section class="lesson" id="state">
+  <h2><span class="n">15</span>State drives the UI</h2>
+  <p class="why">
+    <strong>This is the idea that everything modern is built on.</strong> Don't poke at the page
+    directly. Keep a plain object — <em>the state</em> — that describes what's true right now.
+    Change the state, and let one <code>render()</code> function redraw from it. React, Vue,
+    Svelte and Flutter are all elaborate versions of this single sentence.
+  </p>
+
+  <div class="demo">
+    <div class="knobs">
+      <h4>Mutate the state</h4>
+      <button class="btn" data-act="inc" style="justify-content:center">count + 1</button>
+      <button class="btn" data-act="dec" style="justify-content:center">count − 1</button>
+      <label class="switch">state.dark <input type="checkbox" id="st-dark" checked></label>
+      <div class="knob">
+        <label>state.label</label>
+        <input type="text" id="st-label" value="Likes">
+      </div>
+      <button class="btn" data-act="reset" style="justify-content:center">Reset state</button>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result — rendered <em>only</em> from the object below</div>
+      <div id="st-view" style="display:grid;place-items:center;gap:10px;padding:20px;border-radius:14px;transition:.25s;">
+        <div id="st-count" style="font-size:3rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1">0</div>
+        <div id="st-lab" style="letter-spacing:.16em;text-transform:uppercase;font-size:.72rem;opacity:.7">Likes</div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="code-title">state (live)</div>
+        <pre class="code" id="st-json" style="border-top:0;border-radius:10px;grid-column:auto"></pre>
+      </div>
+    </div>
+    <pre class="code" id="st-code"></pre>
+  </div>
+
+  <div class="note">
+    <b>Why this matters:</b> with direct DOM poking, ten features means ten places that can
+    disagree with each other. With state + render, there is exactly <em>one</em> source of truth,
+    and the screen is just a photograph of it.
+  </div>
+</section>
+
+<!-- ============ 14 REACTIVE APP ============ -->
+<section class="lesson" id="reactive">
+  <h2><span class="n">16</span>Putting it together: a real reactive app</h2>
+  <p class="why">
+    <strong>Everything above, in one working thing.</strong> Grid layout, native inputs, events,
+    state, transitions and derived data (that filter and counter aren't stored — they're
+    <em>computed</em> from state every render). About 40 lines of JavaScript.
+  </p>
+
+  <div class="todo-app">
+    <form id="todo-form" class="todo-add">
+      <input id="todo-input" type="text" placeholder="What needs doing?" aria-label="New task" required>
+      <button class="btn primary" type="submit">Add</button>
+    </form>
+
+    <div class="todo-bar">
+      <div class="seg" data-seg="td-filter">
+        <button data-v="all" aria-pressed="true">All</button>
+        <button data-v="active">Active</button>
+        <button data-v="done">Done</button>
+      </div>
+      <span id="todo-count" class="pill">0 left</span>
+      <button class="btn" id="todo-clear" style="padding:5px 12px;font-size:.78rem">Clear done</button>
+    </div>
+
+    <ul id="todo-list" class="todo-list"></ul>
+    <p id="todo-empty" style="color:var(--muted);font-size:.88rem;text-align:center;padding:18px 0">
+      Nothing here yet. Add something above. ↑
+    </p>
+  </div>
+
+  <div class="note">
+    <b>Look for the pattern:</b> every button just edits the <code>todos</code> array and calls
+    <code>render()</code>. No button knows what the screen looks like. That separation is
+    the entire reason front-end frameworks exist.
+  </div>
+</section>
+
+<!-- ============ 15 MODERN ============ -->
+<section class="lesson" id="modern">
+  <h2><span class="n">17</span>2026 CSS superpowers</h2>
+  <p class="why">
+    <strong>If you learned CSS more than a couple of years ago, this section is the update.</strong>
+    Each of these replaced something that used to require JavaScript, a build step, or a
+    horrible hack.
+  </p>
+
+  <div class="cards">
+    <div class="card"><span class="pill">:has()</span><h3>The parent selector</h3>
+      <p>Style an element based on what's <em>inside</em> it. Impossible for 20 years.</p></div>
+    <div class="card"><span class="pill">nesting</span><h3>Sass, built in</h3>
+      <p>Nest rules natively. One less build tool in your project.</p></div>
+    <div class="card"><span class="pill">clamp()</span><h3>Fluid everything</h3>
+      <p>Type and spacing that scale smoothly without a single breakpoint.</p></div>
+    <div class="card"><span class="pill">color-mix()</span><h3>Maths on colours</h3>
+      <p>Blend two colours in CSS — hover states derived from one brand colour.</p></div>
+    <div class="card"><span class="pill">oklch()</span><h3>Perceptual colour</h3>
+      <p>Lightness that actually looks equal across hues, plus wider-gamut screens.</p></div>
+    <div class="card"><span class="pill">@layer</span><h3>Cascade layers</h3>
+      <p>Decide which stylesheet wins, on purpose, instead of fighting specificity.</p></div>
+    <div class="card"><span class="pill">view-transition</span><h3>Native page transitions</h3>
+      <p>Cross-fade or morph between states and pages — app feel, zero framework.</p></div>
+    <div class="card"><span class="pill">:is() / :where()</span><h3>Cleaner selectors</h3>
+      <p>Group selectors readably and control specificity deliberately.</p></div>
+  </div>
+
+  <h3 style="margin-top:32px">Play with <code>:has()</code> — the parent selector</h3>
+  <p style="max-width:70ch;color:var(--text-soft)">Tick a card. The <em>card</em> restyles itself because it
+  <em>has</em> a checked input inside it — and the <em>grid</em> restyles because it has a selected
+  card inside it. No JavaScript is running here at all.</p>
+  <div class="has-grid" id="has-grid">
+    <label class="has-card"><input type="checkbox"><span>🦫 Capybara</span></label>
+    <label class="has-card"><input type="checkbox"><span>🦦 Otter</span></label>
+    <label class="has-card"><input type="checkbox"><span>🦥 Sloth</span></label>
+  </div>
+  <pre class="code" style="border-radius:12px;border:1px solid var(--line);margin:14px 0"><span class="cm">/* pure CSS — the parent reacts to its child */</span>
+<span class="sel">.has-card:has(input:checked)</span> { <span class="prop">border-color</span>: <span class="val">var(--accent)</span>; <span class="prop">background</span>: <span class="val">var(--accent-soft)</span>; }
+<span class="sel">.has-grid:has(input:checked)</span>  { <span class="prop">background</span>: <span class="val">var(--accent-soft)</span>; }
+<span class="sel">.has-card:not(:has(input:checked))</span> { <span class="prop">opacity</span>: <span class="val">.55</span>; }</pre>
+
+  <h3 style="margin-top:32px">View Transitions — app-like state changes</h3>
+  <p style="max-width:70ch;color:var(--text-soft)">Click to reorder. The browser takes a snapshot before and
+  after, then animates every item to its new home automatically. This is
+  <code>document.startViewTransition()</code>, and it works across full page navigations too.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+    <button class="btn primary" id="vt-shuffle">🔀 Shuffle with a view transition</button>
+    <button class="btn" id="vt-plain">Shuffle without one</button>
+  </div>
+  <div id="vt-grid" class="vt-grid"></div>
+  <div id="vt-support" class="note" style="display:none"><b>Heads up:</b> your browser doesn't support View Transitions yet, so the shuffle just snaps. The page still works — that's progressive enhancement.</div>
+
+  <h3 style="margin-top:32px">Fluid type with <code>clamp()</code></h3>
+  <p style="max-width:70ch;color:var(--text-soft)">One line replaces four breakpoints. Drag to resize the box —
+  the heading scales continuously between a floor and a ceiling.</p>
+  <div class="demo">
+    <div class="knobs">
+      <h4>clamp(min, ideal, max)</h4>
+      <div class="knob"><label>container width <b id="v-clw">600px</b></label><input type="range" id="k-clw" min="240" max="760" value="600"></div>
+      <div class="knob"><label>min <b id="v-clmin">1.1rem</b></label><input type="range" id="k-clmin" min="8" max="28" value="17.6" step="1.6"></div>
+      <div class="knob"><label>ideal <b id="v-clid">5cqw</b></label><input type="range" id="k-clid" min="2" max="12" value="5"></div>
+      <div class="knob"><label>max <b id="v-clmax">3rem</b></label><input type="range" id="k-clmax" min="24" max="80" value="48" step="4"></div>
+    </div>
+    <div class="stage">
+      <div class="stage-label">Result</div>
+      <div id="cl-frame" style="container-type:inline-size;margin-inline:auto;border:2px solid var(--line-strong);border-radius:12px;padding:18px;background:var(--bg-soft);">
+        <div id="cl-text" style="font-weight:800;letter-spacing:-.02em;line-height:1.15">Text that fits.</div>
+      </div>
+      <div style="text-align:center;color:var(--muted);font-size:.78rem;margin-top:10px" id="cl-status"></div>
+    </div>
+    <pre class="code" id="cl-code"></pre>
+  </div>
+</section>
+
+<!-- ============ 16 NEXT ============ -->
+<section class="lesson" id="next">
+  <h2><span class="n">18</span>Cheat sheet, then go build</h2>
+
+  <div class="cards">
+    <div class="card"><h3>Centre anything</h3>
+      <pre class="mini"><span class="prop">display</span>:<span class="val">grid</span>;
+<span class="prop">place-items</span>:<span class="val">center</span>;</pre></div>
+    <div class="card"><h3>Auto-responsive gallery</h3>
+      <pre class="mini"><span class="prop">display</span>:<span class="val">grid</span>;
+<span class="prop">grid-template-columns</span>:
+ <span class="val">repeat(auto-fit,minmax(220px,1fr))</span>;</pre></div>
+    <div class="card"><h3>Navbar</h3>
+      <pre class="mini"><span class="prop">display</span>:<span class="val">flex</span>;
+<span class="prop">justify-content</span>:<span class="val">space-between</span>;
+<span class="prop">align-items</span>:<span class="val">center</span>;</pre></div>
+    <div class="card"><h3>Fluid type</h3>
+      <pre class="mini"><span class="prop">font-size</span>:<span class="val">clamp(1rem,2.5vw,2rem)</span>;</pre></div>
+    <div class="card"><h3>Smooth hover</h3>
+      <pre class="mini"><span class="prop">transition</span>:<span class="val">transform .2s ease</span>;
+<span class="sel">&amp;:hover</span>{<span class="prop">transform</span>:<span class="val">translateY(-3px)</span>}</pre></div>
+    <div class="card"><h3>Respect the user</h3>
+      <pre class="mini"><span class="sel">@media (prefers-reduced-motion:reduce)</span>{
+  <span class="sel">*</span>{<span class="prop">animation</span>:<span class="val">none</span>!important}
+}</pre></div>
+  </div>
+
+  <h3 style="margin-top:30px">Six habits that make you look senior</h3>
+  <ol style="max-width:70ch;color:var(--text-soft)">
+    <li><b>Use the right element.</b> <code>&lt;button&gt;</code> for actions, <code>&lt;a&gt;</code> for navigation. Accessibility mostly comes free if you do.</li>
+    <li><b>Design mobile-first.</b> Write the narrow layout, then add complexity upward with <code>min-width</code> queries.</li>
+    <li><b>Use CSS custom properties</b> for colour and spacing. One change updates the whole site.</li>
+    <li><b>Animate <code>transform</code> and <code>opacity</code> only.</b> Everything else risks jank.</li>
+    <li><b>Test with the keyboard.</b> Tab through your page. If you can't reach something, neither can a lot of your users.</li>
+    <li><b>Check <a href="https://caniuse.com" target="_blank" rel="noopener">caniuse.com</a> and Baseline</b> before shipping a shiny new feature, and provide a plain fallback.</li>
+  </ol>
+
+  <h3 style="margin-top:30px">Putting this online (Cloudflare Pages)</h3>
+  <p style="max-width:70ch;color:var(--text-soft)">This whole site is a single <code>index.html</code> with no build step, so deploying is genuinely a drag-and-drop:</p>
+  <ol style="max-width:70ch;color:var(--text-soft)">
+    <li>Put <code>index.html</code> in a folder on its own.</li>
+    <li>Go to the Cloudflare dashboard → <b>Workers &amp; Pages</b> → <b>Create</b> → <b>Pages</b> → <b>Upload assets</b>.</li>
+    <li>Drag the folder in, name the project, hit deploy. You get a free <code>*.pages.dev</code> URL with HTTPS and a global CDN.</li>
+    <li>Prefer git? Push the folder to GitHub and connect the repo instead — leave the build command empty and set the output directory to the folder. Every push then redeploys itself.</li>
+    <li>CLI alternative: <code>npx wrangler pages deploy .</code> from inside the folder.</li>
+  </ol>
+
+  <footer>
+    <p><b>Built as one self-contained HTML file</b> — view source and read the whole thing; that's the best next lesson. Nothing here needs a framework, a bundler, or an install.</p>
+    <p style="font-size:.82rem">Next stops: <a href="https://developer.mozilla.org/en-US/docs/Learn" target="_blank" rel="noopener">MDN Learn</a> ·
+      <a href="https://web.dev/learn/css" target="_blank" rel="noopener">web.dev/learn/css</a> ·
+      <a href="https://flexboxfroggy.com" target="_blank" rel="noopener">Flexbox Froggy</a> ·
+      <a href="https://cssgridgarden.com" target="_blank" rel="noopener">Grid Garden</a></p>
+  </footer>
+</section>
+
+<style>
+/* ---- todo app ---- */
+.todo-app{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);max-width:640px;}
+.todo-add{display:flex;gap:8px;margin-bottom:14px;}
+.todo-add input{flex:1;padding:11px 13px;font-size:.95rem;}
+.todo-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--line);}
+.todo-list{list-style:none;margin:0;padding:0;display:grid;gap:6px;}
+.todo-item{
+  display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
+  background:var(--panel-2);border:1px solid var(--line);
+  animation:itemIn .22s ease;
+}
+@keyframes itemIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.todo-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex:none;}
+.todo-item span{flex:1;font-size:.94rem;transition:.2s;}
+.todo-item:has(input:checked) span{text-decoration:line-through;opacity:.45;}
+.todo-item:has(input:checked){border-color:#5ddba033;}
+.todo-item button{background:none;border:0;color:var(--faint);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:6px;}
+.todo-item button:hover{color:var(--accent-2);background:#ff8fb115;}
+
+/* ---- :has() demo ---- */
+.has-grid{display:flex;gap:12px;flex-wrap:wrap;padding:14px;border-radius:14px;border:1px dashed var(--line-strong);transition:.25s;}
+.has-card{
+  display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;
+  border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:12px 16px;
+  transition:.22s;
+}
+.has-card input{width:17px;height:17px;accent-color:var(--accent);}
+.has-card:has(input:checked){border-color:var(--accent);background:var(--accent-soft);transform:translateY(-2px);}
+.has-grid:has(input:checked){background:var(--accent-soft);border-color:var(--accent-line);}
+.has-grid:has(input:checked) .has-card:not(:has(input:checked)){opacity:.5;}
+
+/* ---- view transitions ---- */
+.vt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;}
+.vt-item{
+  aspect-ratio:1;display:grid;place-items:center;font-size:1.7rem;border-radius:14px;
+  background:var(--panel-2);border:1px solid var(--line);
+}
+@media (prefers-reduced-motion:no-preference){
+  ::view-transition-old(*),::view-transition-new(*){animation-duration:.45s;}
+}
+
+pre.mini{
+  font-family:var(--mono);font-size:.76rem;background:var(--code-bg);border:1px solid var(--line);
+  border-radius:8px;padding:10px 12px;margin:8px 0 0;overflow-x:auto;color:var(--code-text);line-height:1.6;
+}
+pre.mini .prop{color:var(--c-prop)}pre.mini .val{color:var(--c-val)}pre.mini .sel{color:var(--c-sel)}
+</style>
+
+</main>
+</div><!-- /.app -->
+
+<footer class="pxt-foot">
+  <p>A free teaching resource from <a href="../index.html">PXT Tech Studio</a> — where domain expertise meets AI.</p>
+  <p class="pxt-legal">© <span id="pxt-yr"></span> PXT Tech Studio, LLC · <a href="mailto:contact@pxttechstudio.com">contact@pxttechstudio.com</a></p>
+</footer>
+
+<div class="scroll-progress" aria-hidden="true"></div>
+<div class="tier-badge" aria-hidden="true">
+  <span class="t-m">📱 Mobile layout</span>
+  <span class="t-t">📲 Tablet layout</span>
+  <span class="t-d">🖥 Desktop layout</span>
+</div>
+
+<style>
+/* ============================================================
+   INTRO-DEMO STYLES
+   ============================================================ */
+.mini-card.styled{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:14px;
+  padding:18px 20px;max-width:330px;margin-inline:auto;text-align:center;
+  box-shadow:var(--shadow);font-family:var(--sans);
+}
+.mini-card.styled h3{margin:0 0 4px;font-size:1.05rem;}
+.mini-card.styled p{margin:0 0 12px;color:var(--muted);font-size:.86rem;}
+.mini-card.styled button{
+  font:inherit;font-weight:600;font-size:.86rem;cursor:pointer;padding:9px 20px;
+  border-radius:10px;border:0;background:linear-gradient(135deg,var(--accent),#9d7cff);color:var(--on-accent);
+  transition:transform .16s;
+}
+.mini-card.styled button:hover{transform:translateY(-2px);}
+.mini-card:not(.styled){font-family:Times,"Times New Roman",serif;color:var(--text);max-width:330px;margin-inline:auto;}
+.mini-card:not(.styled) button{all:revert;}
+.mini-out{font-size:.8rem;color:var(--accent-3);min-height:1.2em;margin:8px 0 0;}
+
+/* box-model demo */
+#bm-margin{background-image:repeating-linear-gradient(45deg,#ff8fb126 0 6px,transparent 6px 12px);border-radius:4px;transition:padding .15s;}
+#bm-margin.plain{background-image:none;}
+#bm-el{
+  background:linear-gradient(135deg,var(--accent),#9d7cff);color:var(--on-accent);font-weight:700;
+  font-family:var(--mono);font-size:.85rem;text-align:center;border-style:solid;border-color:var(--accent-3);
+  transition:padding .15s,border-width .15s,border-radius .15s;
+}
+#bm-el.plain{border-color:var(--line-strong);}
+
+/* responsive demo */
+#rw-frame{container-type:inline-size;}
+#rw-title{font-size:clamp(1rem,5cqw,2.1rem);}
+#rw-layout{grid-template-columns:1fr;}
+@container (min-width:700px){ #rw-layout{grid-template-columns:2fr 1fr;} }
+
+/* clamp demo */
+#cl-frame{width:600px;max-width:100%;}
+
+/* ============================================================
+   THREE LAYOUT TIERS  —  the site practises what it preaches
+   ============================================================ */
+
+/* ---------- TABLET + MOBILE share the ☰ lesson panel ---------- */
+@media (max-width:1023px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{
+    position:sticky;top:0;height:auto;overflow:visible;
+    border-right:0;border-bottom:1px solid var(--line);padding:9px 14px;
+  }
+  .sidebar .tag{display:none;}
+  .brand{font-size:.95rem;}
+  #nav-panel{
+    position:absolute;top:calc(100% + 9px);right:12px;left:12px;
+    max-height:min(70dvh,560px);overflow-y:auto;overscroll-behavior:contain;
+    background:var(--panel);border:1px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);padding:14px;z-index:61;
+    opacity:0;transform:translateY(-10px) scale(.97);transform-origin:100% 0;
+    pointer-events:none;visibility:hidden;
+    transition:opacity .2s ease, transform .2s cubic-bezier(.34,1.3,.64,1), visibility .2s;
+  }
+  body.nav-open #nav-panel{opacity:1;transform:none;pointer-events:auto;visibility:visible;}
+  body.nav-open{overflow:hidden;}
+  .toc{flex-direction:column;overflow:visible;gap:1px;}
+  .toc .grp{display:block;margin-top:12px;}
+  .toc a{white-space:normal;padding:10px 12px;font-size:.92rem;}
+  main{padding:0 26px 110px;}
+  .hero{padding:40px 0 18px;}
+}
+
+/* ---------- TABLET: 640px – 1023px ---------- */
+@media (min-width:640px) and (max-width:1023px){
+  #nav-panel{left:auto;width:min(460px,calc(100vw - 24px));}
+  .toc{display:grid;grid-template-columns:1fr 1fr;gap:1px 12px;}
+  .toc .grp{grid-column:1/-1;}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+
+/* ---------- MOBILE: up to 639px ---------- */
+@media (max-width:639px){
+  .sidebar{padding:8px 10px;}
+  main{padding:0 15px 90px;}
+  .hero{padding:28px 0 16px;}
+  .lesson{padding:32px 0;}
+  .demo{grid-template-columns:1fr;margin-inline:-3px;}
+  .knobs{border-right:0;border-bottom:1px solid var(--line);}
+  .cards{grid-template-columns:1fr;}
+  .stage{padding:14px;min-height:180px;}
+  .code{font-size:.71rem;}
+  /* fat-finger friendly targets */
+  .seg button{padding:9px 12px;font-size:.78rem;}
+  .btn{padding:12px 18px;}
+  .icon-btn{width:42px;height:42px;}
+  input[type=range]{height:34px;}
+  .switch input{width:44px;height:24px;}
+  .switch input::after{width:18px;}
+  .switch input:checked::after{left:calc(100% - 20px);}
+  .todo-app{padding:14px;}
+  .todo-add{flex-direction:column;}
+  .snap-item{flex-basis:80%;}
+  #nav-panel{padding:12px;border-radius:18px;}
+}
+
+/* ---------- DESKTOP: 1024px and up ---------- */
+@media (min-width:1024px){
+  .app{grid-template-columns:250px minmax(0,1fr);}
+  .brand{font-size:.9rem;line-height:1.3;}
+  .icon-btn{width:34px;height:34px;font-size:.92rem;}
+  .sidebar{position:sticky;top:0;height:100dvh;overflow-y:auto;border-right:1px solid var(--line);border-bottom:0;}
+  .toc{flex-direction:column;overflow:visible;}
+  .toc .grp{display:block;}
+  .sidebar .tag{display:block;}
+  #menu-btn{display:none;}
+  #nav-panel{display:block !important;}
+  .nav-scrim{display:none;}
+}
+
+/* "you left off here" bar */
+.resume{
+  position:fixed;left:50%;bottom:18px;z-index:90;
+  display:flex;align-items:center;gap:10px;
+  transform:translate(-50%,140%);opacity:0;
+  transition:transform .32s cubic-bezier(.34,1.4,.64,1), opacity .3s;
+  background:var(--panel);border:1px solid var(--accent-line);border-radius:99px;
+  box-shadow:var(--shadow);padding:8px 10px 8px 18px;
+  font-size:.85rem;color:var(--text-soft);max-width:calc(100vw - 24px);
+}
+.resume.in{transform:translate(-50%,0);opacity:1;}
+.resume b{color:var(--accent);}
+.resume .btn{padding:7px 14px;font-size:.8rem;border-radius:99px;}
+.resume .icon-btn{width:30px;height:30px;font-size:.8rem;}
+@media (max-width:639px){
+  .resume{left:12px;right:12px;transform:translateY(140%);padding:10px 12px;flex-wrap:wrap;font-size:.8rem;}
+  .resume.in{transform:translateY(0);}
+  .resume span{flex:1 1 100%;}
+}
+
+/* ============================================================
+   PXT TECH STUDIO SITE CHROME
+   Uses the playground's own tokens, so it follows the day/night
+   toggle rather than fighting it.
+   ============================================================ */
+.pxt-bar{
+  display:flex; align-items:center; gap:10px;
+  padding:9px clamp(15px,3vw,26px);
+  background:var(--bg-soft); border-bottom:1px solid var(--line);
+  text-decoration:none; color:var(--muted);
+  font-size:.83rem; font-weight:600; letter-spacing:-.01em;
+  transition:background .2s, color .2s;
+}
+.pxt-bar:hover{ background:var(--panel); color:var(--text); }
+.pxt-logo{ height:24px; width:auto; border-radius:5px; }
+.pxt-word{ color:var(--text); }
+.pxt-back{
+  margin-left:auto; display:inline-flex; align-items:center; gap:6px;
+  font-weight:500; color:var(--muted);
+}
+.pxt-back::before{ content:"←"; transition:transform .2s; }
+.pxt-bar:hover .pxt-back{ color:var(--accent); }
+.pxt-bar:hover .pxt-back::before{ transform:translateX(-3px); }
+:root[data-theme="dark"]  .pxt-logo-day  { display:none; }
+:root[data-theme="light"] .pxt-logo-night{ display:none; }
+@media (max-width:520px){ .pxt-word{display:none;} }
+
+.pxt-foot{
+  border-top:1px solid var(--line); background:var(--bg-soft);
+  padding:26px clamp(15px,3vw,26px); text-align:center;
+  color:var(--muted); font-size:.85rem;
+}
+.pxt-foot p{ margin:0 0 6px; }
+.pxt-foot a{ color:var(--accent); text-decoration:none; }
+.pxt-foot a:hover{ text-decoration:underline; }
+.pxt-legal{ font-size:.78rem; color:var(--faint); }
+
+/* live tier indicator — itself a media-query demo */
+.tier-badge{
+  position:fixed;left:12px;bottom:12px;z-index:80;pointer-events:none;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;
+  background:var(--bg-a);border:1px solid var(--line);backdrop-filter:blur(8px);
+  color:var(--muted);padding:5px 10px;border-radius:99px;opacity:.72;
+}
+.tier-badge span{display:none;}
+@media (max-width:639px){ .tier-badge .t-m{display:inline;} }
+@media (min-width:640px) and (max-width:1023px){ .tier-badge .t-t{display:inline;} }
+@media (min-width:1024px){ .tier-badge .t-d{display:inline;} }
+</style>
+
+<script>
+/* ============================================================
+   Tiny helpers
+   ============================================================ */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const P  = (p,v) => '  <span class="prop">'+p+'</span>: <span class="val">'+esc(v)+'</span>;';
+const S  = s => '<span class="sel">'+esc(s)+'</span> {';
+const CM = t => '<span class="cm">/* '+esc(T(t))+' */</span>';
+const H  = s => s.replace(/&lt;(\/?)([a-z0-9-]+)/gi,'&lt;$1<span class="tag">$2</span>')
+                 .replace(/([a-z-]+)=(&quot;|")([^"]*)\2/gi,'<span class="attr">$1</span>=<span class="str">"$3"</span>');
+
+/* segmented button groups: seg('name', value => {...}) */
+function seg(name, cb){
+  const wrap = $('.seg[data-seg="'+name+'"]');
+  if(!wrap) return;
+  wrap.addEventListener('click', e => {
+    const b = e.target.closest('button'); if(!b) return;
+    $$('button', wrap).forEach(x => x.setAttribute('aria-pressed', String(x===b)));
+    remember('seg.' + name, b.dataset.v);
+    cb(b.dataset.v);
+  });
+}
+const segVal = name => ($('.seg[data-seg="'+name+'"] button[aria-pressed="true"]')||{dataset:{}}).dataset.v;
+
+/* 繁體中文 translation table — keys are the original English innerHTML */
+const ZH = {"html":{"Learn by turning knobs.":"轉動旋鈕，動手學。","<span class=\"num\">00</span> The three languages":"<span class=\"num\">00</span> 三種語言","<span class=\"num\">01</span> Everything is a box":"<span class=\"num\">01</span> 一切都是盒子","<span class=\"num\">02</span> Anatomy of a page":"<span class=\"num\">02</span> 網頁的骨架","<span class=\"num\">03</span> The building blocks":"<span class=\"num\">03</span> 常見的區塊","<span class=\"num\">04</span> Flexbox":"<span class=\"num\">04</span> 彈性盒 Flexbox","<span class=\"num\">05</span> CSS Grid":"<span class=\"num\">05</span> 網格 CSS Grid","<span class=\"num\">06</span> Responsive &amp; fluid":"<span class=\"num\">06</span> 響應式與流動式","<span class=\"num\">07</span> Container queries":"<span class=\"num\">07</span> 容器查詢","<span class=\"num\">08</span> Inputs &amp; controls":"<span class=\"num\">08</span> 輸入與控制項","<span class=\"num\">09</span> Dialogs &amp; popovers":"<span class=\"num\">09</span> 對話框與浮層","<span class=\"num\">10</span> Forms that validate":"<span class=\"num\">10</span> 會驗證的表單","<span class=\"num\">11</span> Color, depth, glass":"<span class=\"num\">11</span> 色彩、層次、玻璃感","<span class=\"num\">12</span> Transition &amp; animation":"<span class=\"num\">12</span> 轉場與動畫","<span class=\"num\">13</span> Scroll-driven effects":"<span class=\"num\">13</span> 捲動驅動效果","<span class=\"num\">14</span> Events: page listens":"<span class=\"num\">14</span> 事件：頁面在聽","<span class=\"num\">15</span> State drives the UI":"<span class=\"num\">15</span> 狀態驅動畫面","<span class=\"num\">16</span> Build a reactive app":"<span class=\"num\">16</span> 做一個反應式應用","<span class=\"num\">17</span> 2026 CSS superpowers":"<span class=\"num\">17</span> 2026 CSS 超能力","<span class=\"num\">18</span> Cheat sheet &amp; deploy":"<span class=\"num\">18</span> 速查表與上線","↺ Reset everything":"↺ 全部重設","Interactive · No install · No prior code":"可互動 · 免安裝 · 零基礎","The modern web, one knob at a time.":"現代網頁，一次轉一個旋鈕。","Every box below is <em>alive</em>. Drag a slider, flip a switch, and watch both the result <strong>and the code</strong> change together. That is the whole trick to learning front-end: stop reading about it, start poking it.":"下面每一個方塊都是<em>活的</em>。拖滑桿、切開關，你會看到結果<strong>和程式碼</strong>同時改變。這就是學前端唯一的訣竅：別只是讀，動手去戳它。","Start at zero →":"從零開始 →","Skip to the 2026 stuff":"直接看 2026 新技術","<span class=\"n\">00</span>Three languages, three jobs":"<span class=\"n\">00</span>三種語言，三種分工","<strong>The whole web is three files talking to each other.</strong> HTML says <em>what exists</em>. CSS says <em>what it looks like</em>. JavaScript says <em>what happens when you touch it</em>. Nothing else you learn later changes this.":"<strong>整個網頁，就是三個檔案在互相對話。</strong>HTML 說<em>有什麼東西</em>；CSS 說<em>它長什麼樣子</em>；JavaScript 說<em>你碰它時會發生什麼事</em>。之後學到多深，這件事都不會變。","The nouns":"名詞","Headings, buttons, images, lists. Structure and meaning — no styling opinions.":"標題、按鈕、圖片、清單。負責結構（structure）與語意（meaning），不管好不好看。","The adjectives":"形容詞","Color, size, spacing, layout, motion. It decorates the nouns HTML created.":"顏色、大小、間距、排版、動態。負責裝飾 HTML 造出來的那些名詞。","The verbs":"動詞","Click, type, fetch, update. It reacts to humans and changes the other two live.":"點擊、輸入、抓資料、更新。它對人做出反應，並即時改動前面兩者。","Turn the knobs and watch one little card get built up, layer by layer:":"轉動開關，看一張小卡片如何一層一層被組起來：","Layers":"圖層（layers）","Result":"結果","<span class=\"n\">01</span>Everything on a page is a box":"<span class=\"n\">01</span>頁面上的每樣東西都是盒子","<strong>Nothing on a webpage is a free-floating shape.</strong> Every element is a rectangle with four layers: content, then <em>padding</em> (inside space), then <em>border</em>, then <em>margin</em> (outside space). Ninety percent of \"why is this thing in the wrong place\" is a padding/margin question.":"<strong>網頁上沒有任何東西是自由漂浮的形狀。</strong>每個元素都是一個長方形，由四層組成：內容（content）、內距（padding，內側空間）、邊框（border）、外距（margin，外側空間）。九成的「這東西為什麼跑掉了」，答案都在 padding 或 margin。","Box model":"盒模型（box model）","padding <b id=\"v-pad\">18px</b>":"內距 padding <b id=\"v-pad\">18px</b>","border <b id=\"v-bor\">4px</b>":"邊框 border <b id=\"v-bor\">4px</b>","margin <b id=\"v-mar\">20px</b>":"外距 margin <b id=\"v-mar\">20px</b>","border-radius <b id=\"v-rad\">12px</b>":"圓角 border-radius <b id=\"v-rad\">12px</b>","<b>Pro tip:</b> padding grows the box <em>inwards from the edge</em> and is clickable/coloured; margin is invisible space that pushes <em>other</em> boxes away. When two vertical margins meet, they \"collapse\" into the bigger one — a classic beginner surprise.":"<b>小技巧：</b>padding 是<em>從邊緣往內長</em>的空間，看得見顏色也點得到；margin 是看不見的空間，用來把<em>別的</em>盒子推開。上下兩個 margin 相遇時會「合併」成比較大的那一個（margin collapsing）——初學者的經典陷阱。","<span class=\"n\">02</span>The anatomy of a page":"<span class=\"n\">02</span>網頁的骨架","<strong>Almost every website is the same five regions.</strong> A <em>header</em> at the top, a <em>nav</em> to get around, the <em>main</em> content, an optional <em>aside</em> for secondary stuff, and a <em>footer</em> at the bottom. Learn this skeleton once and you can read the source of any site on the web.":"<strong>幾乎每個網站都是同樣的五個區塊。</strong>最上面的<em>頁首（header）</em>、用來導覽的<em>選單（nav）</em>、頁面<em>主要內容（main）</em>、放次要資訊的<em>側欄（aside）</em>，還有最下面的<em>頁尾（footer）</em>。學會這副骨架，你就看得懂網路上任何網站的原始碼。","Regions":"區塊","Shape":"版型","where does the aside go?":"側欄（aside）放哪裡？","right":"右邊","left":"左邊","below (mobile)":"下方（手機）","The top band":"最上面那條","Logo, site title, search, sign-in. Usually identical on every page.":"商標、網站名稱、搜尋、登入。通常每一頁都長一樣。","Getting around":"帶你去別的地方","The main set of links. Screen readers offer to jump straight to it.":"主要的連結群。螢幕閱讀器會提供「直接跳到選單」的選項。","The point of the page":"這一頁的重點","Exactly one per page, and it holds the content that is unique to this page.":"每頁只能有一個，裝的是這一頁獨有的內容。","Beside the point":"重點旁邊的東西","Related links, filters, adverts. Useful, but not the main story.":"相關連結、篩選器、廣告。有用，但不是主角。","The bottom band":"最下面那條","Contact details, copyright, sitemap, social links.":"聯絡方式、版權、網站地圖、社群連結。","A chunk with a heading":"有標題的一段","Each lesson on this page is a <code>&lt;section&gt;</code>. Give it a heading and it means something.":"這一頁的每一課都是一個 <code>&lt;section&gt;</code>。給它一個標題，它就有了意義。","<b>Why not just use <code>&lt;div&gt;</code> for everything?</b> Because a <code>div</code> means nothing. These named regions are called <em>landmarks</em>: a blind visitor can jump straight to \"main\", Google understands your page better, and reader modes work. They cost you nothing — they're the same box, with a name.":"<b>那全部用 <code>&lt;div&gt;</code> 不行嗎？</b>因為 <code>div</code> 沒有任何意義。這些有名字的區塊叫做<em>地標（landmarks）</em>：視障使用者可以直接跳到 main、Google 更看得懂你的頁面、閱讀模式也才會生效。而且它們完全不用多花力氣——同一個盒子，只是取了名字。","<span class=\"n\">03</span>The blocks every site is made of":"<span class=\"n\">03</span>每個網站都是這些區塊拼出來的","<strong>You have seen these eight things a thousand times.</strong> Navbar, hero, columns, card grid, accordion, tabs, breadcrumb, footer. Almost every page you will ever build is a stack of these. Pick one and it gets built in front of you, with the code that made it.":"<strong>這八樣東西你已經看過上千次了。</strong>導覽列、主視覺、分欄、卡片牆、手風琴、頁籤、麵包屑、頁尾。你將來做的幾乎每一頁，都是這些東西疊起來的。選一個，它會當場組給你看，連程式碼一起。","Pick a block":"選一個區塊","Navbar":"導覽列 Navbar","Hero":"主視覺 Hero","Columns":"分欄 Columns","Card grid":"卡片牆 Card grid","Accordion":"手風琴 Accordion","Tabs":"頁籤 Tabs","Breadcrumb":"麵包屑 Breadcrumb","Footer":"頁尾 Footer","Result — it's live, click it":"結果 — 是活的，點點看","Columns: the three ways":"分欄：只有三種做法","Most page layouts are just \"how do I split this width?\". There are only three answers you need, and you can see all three below.":"大部分的版面問題其實只是「這個寬度要怎麼切？」。你只需要知道三種答案，下面全都有。","Fixed number of columns":"固定欄數","You know you want 3. <code>grid-template-columns: repeat(3, 1fr)</code>.":"你就是要三欄。<code>grid-template-columns: repeat(3, 1fr)</code>。","As many as will fit":"塞得下幾欄就幾欄","You don't care how many. <code>repeat(auto-fit, minmax(220px, 1fr))</code>.":"你不在乎有幾欄。<code>repeat(auto-fit, minmax(220px, 1fr))</code>。","Sidebar plus content":"側欄＋內容","One fixed, one flexible. <code>grid-template-columns: 260px 1fr</code>.":"一欄固定、一欄彈性。<code>grid-template-columns: 260px 1fr</code>。","<b>The accordion, for free:</b> the block above is built from <code>&lt;details&gt;</code> — no JavaScript, keyboard accessible, and findable with Ctrl+F. The tabs use radio buttons and <code>:checked</code>, so they need no JavaScript either. Reach for the platform first.":"<b>手風琴是免費的：</b>上面那個區塊是用 <code>&lt;details&gt;</code> 做的——不用 JavaScript、可用鍵盤操作、連 Ctrl+F 都搜得到裡面的字。頁籤則是用 radio 按鈕加 <code>:checked</code>，同樣不需要 JavaScript。先看看瀏覽器本身有沒有，再去找套件。","<span class=\"n\">04</span>Flexbox — arranging things in a line":"<span class=\"n\">04</span>彈性盒 Flexbox — 把東西排成一條線","<strong>Flexbox lays boxes out along one axis.</strong> You pick a direction (a row or a column), then say how the leftover space should be shared. Navbars, toolbars, button groups, centring anything — that's flexbox. It's the single most-used layout tool on the web.":"<strong>Flexbox 沿著「一個軸」排列盒子。</strong>先選方向（橫排 row 或直排 column），再決定剩下的空間怎麼分。導覽列、工具列、按鈕群組、把任何東西置中——都靠它。這是網頁上使用率最高的排版工具。","Container":"容器（container）","justify-content <span style=\"opacity:.6\">(main axis)</span>":"justify-content <span style=\"opacity:.6\">（主軸）</span>","align-items <span style=\"opacity:.6\">(cross axis)</span>":"align-items <span style=\"opacity:.6\">（交叉軸）</span>","gap <b id=\"v-fxgap\">12px</b>":"間距 gap <b id=\"v-fxgap\">12px</b>","Item 2 only":"只影響第 2 個","flex-grow <b id=\"v-fxgrow\">0</b>":"flex-grow <b id=\"v-fxgrow\">0</b>","Result <span style=\"text-transform:none;letter-spacing:0\">— the dashed box is the flex container</span>":"結果 <span style=\"text-transform:none;letter-spacing:0\">— 虛線框就是 flex 容器</span>","<b>The one-line trick:</b> <code>display:flex; justify-content:center; align-items:center;</code> centres anything, horizontally and vertically. This used to be a famously hard problem.":"<b>一行搞定的招式：</b><code>display:flex; justify-content:center; align-items:center;</code> 可以把任何東西水平＋垂直置中。以前這是出了名的難題。","<span class=\"n\">05</span>CSS Grid — arranging things in two directions":"<span class=\"n\">05</span>網格 CSS Grid — 同時排兩個方向","<strong>Grid is flexbox's two-dimensional sibling.</strong> You define columns and rows up front, then drop items into the cells. Page layouts, dashboards, photo galleries, magazine spreads. Rule of thumb: <em>flexbox for a line of things, grid for a layout.</em>":"<strong>Grid 是 Flexbox 的二維版兄弟。</strong>先定義好欄（column）和列（row），再把項目丟進格子。頁面骨架、儀表板、相簿、雜誌式版面都適合。判斷原則：<em>一排東西用 Flexbox，一整個版面用 Grid。</em>","Grid container":"Grid 容器","columns <b id=\"v-gcols\">3</b>":"欄數 columns <b id=\"v-gcols\">3</b>","gap <b id=\"v-ggap\">12px</b>":"間距 gap <b id=\"v-ggap\">12px</b>","column sizing":"欄寬模式","1fr each":"每欄 1fr","The pink item":"粉紅色那一格","column span <b id=\"v-gspan\">1</b>":"橫跨欄數 <b id=\"v-gspan\">1</b>","row span <b id=\"v-grspan\">1</b>":"橫跨列數 <b id=\"v-grspan\">1</b>","<b>The magic value:</b> <code>fr</code> means \"one share of the free space\". And <code>repeat(auto-fit, minmax(200px, 1fr))</code> builds a gallery that reflows itself at every screen size — <em>with no media queries at all</em>. Try the auto-fit button, then make your browser window narrower.":"<b>神奇的單位：</b><code>fr</code> 代表「剩餘空間的一份」。而 <code>repeat(auto-fit, minmax(200px, 1fr))</code> 能做出在任何螢幕寬度都自動重排的相簿——<em>而且完全不需要媒體查詢（media query）</em>。按下 auto-fit，再把瀏覽器視窗拉窄看看。","<span class=\"n\">06</span>Responsive: one page, every screen":"<span class=\"n\">06</span>響應式 Responsive：一頁通吃所有螢幕","<strong>You don't build a mobile site and a desktop site.</strong> You build one page that bends. Two ideas do most of the work: <em>fluid units</em> that scale continuously, and <em>media queries</em> that snap to a different layout past a certain width.":"<strong>你不會做一個手機版再做一個電腦版。</strong>你做的是「一個會彎的頁面」。主要靠兩個觀念：會連續縮放的<em>流動單位（fluid units）</em>，以及超過某個寬度就切換版面的<em>媒體查詢（media queries）</em>。","Pretend screen width":"模擬螢幕寬度","viewport <b id=\"v-vw\">900px</b>":"可視區 viewport <b id=\"v-vw\">900px</b>","device preset":"裝置預設","📱 phone":"📱 手機","📲 tablet":"📲 平板","🖥 desktop":"🖥 桌機","The layout below switches at <b>700px</b> — that's a media query firing. The heading size uses <code>clamp()</code>, so it slides smoothly instead of jumping.":"下面的版面在 <b>700px</b> 切換——那就是媒體查詢被觸發。標題大小用 <code>clamp()</code>，所以是平滑滑動而不是跳一下。","Relative to the parent":"相對於父層","<code>width:50%</code> — half of whatever contains it.":"<code>width:50%</code> — 容器寬度的一半。","Relative to root font size":"相對於根字級","The safe unit for text and spacing. Respects the user's browser font setting.":"文字與間距最安全的單位，會尊重使用者自己的瀏覽器字級設定。","Relative to the screen":"相對於螢幕","<code>100dvh</code> = full viewport height, correctly, even with mobile browser bars.":"<code>100dvh</code> = 完整的可視高度，就算手機有網址列也算得準。","min, ideal, max":"最小、理想、最大","<code>clamp(1rem, 4vw, 3rem)</code> — grows with the screen but never gets silly.":"<code>clamp(1rem, 4vw, 3rem)</code> — 隨螢幕變大，但不會誇張到失控。","<span class=\"n\">07</span>Container queries — the modern upgrade":"<span class=\"n\">07</span>容器查詢 Container queries — 現代的升級版","<strong>This is the big shift of the last few years.</strong> A media query asks \"how wide is the <em>screen</em>?\" A container query asks \"how wide is the <em>space I was dropped into</em>?\" That means one component can be genuinely reusable: put it in a sidebar and it goes compact, put it in a main column and it goes wide — no page-level knowledge required.":"<strong>這是近幾年最大的轉變。</strong>媒體查詢問的是「<em>螢幕</em>有多寬？」；容器查詢問的是「<em>我被放進去的那塊空間</em>有多寬？」這讓一個元件（component）真正可以重複使用：放進側欄就變精簡，放進主欄就變寬——完全不需要知道整頁長什麼樣。","Drop the same card in…":"把同一張卡片放進…","slot width <b id=\"v-cq\">520px</b>":"插槽寬度 <b id=\"v-cq\">520px</b>","The card's CSS is <b>identical</b> in both slots. It rearranges itself purely from the width it was given. Below 380px it stacks and hides the blurb.":"兩個插槽裡，卡片的 CSS <b>一模一樣</b>。它純粹依照拿到的寬度自己重排。低於 380px 就改成直式並隱藏說明文字。","Capybara Weekly":"水豚週報","The world's chillest rodent, delivered to your inbox every Thursday.":"全世界最放鬆的齧齒動物，每週四寄到你的信箱。","Subscribe":"訂閱","<span class=\"n\">08</span>Inputs &amp; controls — the browser gives you a lot for free":"<span class=\"n\">08</span>輸入與控制項 — 瀏覽器免費送你一大堆","<strong>Before you install a component library, check what's already built in.</strong> Modern browsers ship sliders, colour pickers, date pickers, search boxes, switches and progress bars — all accessible, keyboard-friendly and translated into every language, at zero cost. Below is a working control panel using nothing but native HTML.":"<strong>在你安裝元件套件之前，先看看內建的有什麼。</strong>現代瀏覽器本身就附了滑桿、選色器、日期選擇器、搜尋框、開關和進度條——全都支援無障礙、可用鍵盤操作、而且已經翻成各國語言，完全免費。下面這個控制面板只用了原生 HTML。","Native controls":"原生控制項","range <b id=\"v-c1\">45</b>":"滑桿 range <b id=\"v-c1\">45</b>","color":"選色 color","select":"下拉 select","text":"文字 text","datalist (typeahead)":"datalist（輸入建議）","<b>Accessibility, free:</b> because these are real <code>&lt;input&gt;</code> elements, they already work with the Tab key, screen readers, voice control and browser autofill. A <code>&lt;div&gt;</code> pretending to be a slider does none of that. Try tabbing through the panel above with your keyboard.":"<b>無障礙是附贈的：</b>因為這些是真正的 <code>&lt;input&gt;</code> 元素，它們本來就支援 Tab 鍵、螢幕閱讀器、語音控制和瀏覽器自動填入。用 <code>&lt;div&gt;</code> 假裝成滑桿，這些全都沒有。用鍵盤 Tab 走一遍上面的面板試試。","<span class=\"n\">09</span>Dialogs, popovers &amp; disclosure — no library needed":"<span class=\"n\">09</span>對話框、浮層與摺疊 — 不需要任何套件","<strong>Modals used to take 200 lines of JavaScript.</strong> Now <code>&lt;dialog&gt;</code>, the <code>popover</code> attribute and <code>&lt;details&gt;</code> handle focus trapping, Escape-to-close, click-outside and stacking for you. This is some of the newest, most useful stuff in the platform.":"<strong>以前做一個彈窗要寫兩百行 JavaScript。</strong>現在 <code>&lt;dialog&gt;</code>、<code>popover</code> 屬性和 <code>&lt;details&gt;</code> 已經幫你處理好焦點鎖定、按 Esc 關閉、點外面關閉和圖層堆疊。這是近年最新也最實用的一批功能。","Try each one":"每個都試試","Open a &lt;dialog&gt;":"開啟 &lt;dialog&gt;","Toggle a popover":"切換 popover 浮層","Fire a toast":"跳一個提示 toast","The dialog traps focus and closes on <b>Escape</b> — you didn't write that. The popover closes when you click anywhere outside — you didn't write that either.":"對話框會鎖住焦點，按 <b>Esc</b> 就關閉——這些你都沒寫。浮層點外面就會關掉——這個你也沒寫。","What is a disclosure widget?":"什麼是摺疊元件（disclosure）？","<code>&lt;details&gt;</code> + <code>&lt;summary&gt;</code> is a native show/hide. It's searchable by Ctrl+F, it's keyboard accessible, and it animates now that browsers support <code>interpolate-size</code>. FAQ sections, done.":"<code>&lt;details&gt;</code> + <code>&lt;summary&gt;</code> 就是原生的展開／收合。Ctrl+F 搜得到裡面的字、可用鍵盤操作，而且瀏覽器支援 <code>interpolate-size</code> 之後還能做動畫。常見問答區，這樣就做完了。","Can I style it?":"可以自訂樣式嗎？","Yes — <code>details[open]</code> lets you restyle the open state, and <code>::details-content</code> lets you animate the reveal.":"可以——<code>details[open]</code> 讓你改寫「已展開」的樣式，<code>::details-content</code> 讓你替展開過程加動畫。","Rendered in the browser's top layer, so I'm never trapped behind <code>overflow:hidden</code>. Click anywhere else to dismiss me.":"我被畫在瀏覽器的最上層（top layer），所以永遠不會被 <code>overflow:hidden</code> 蓋住。點別的地方就能關掉我。","A real modal dialog":"一個真正的強制對話框","Focus is trapped in here. Escape closes me. The page behind is inert. All of that is one HTML element plus <code>.showModal()</code>.":"焦點被鎖在這裡面、按 Esc 會關閉、後面的頁面暫時失效。這一切只需要一個 HTML 元素加上 <code>.showModal()</code>。","Cancel":"取消","Got it":"了解","<span class=\"n\">10</span>Forms that validate themselves":"<span class=\"n\">10</span>會自己驗證的表單","<strong>The browser is a validation engine you already own.</strong> Mark a field <code>required</code>, give it <code>type=\"email\"</code> or a <code>pattern</code>, and CSS can style the valid/invalid states with <code>:user-valid</code> — which politely waits until the user has actually finished typing before shouting at them.":"<strong>瀏覽器本身就是一台你已經擁有的驗證引擎。</strong>幫欄位加上 <code>required</code>、指定 <code>type=\"email\"</code> 或 <code>pattern</code>，CSS 就能用 <code>:user-valid</code> 去改「有效／無效」的樣式——而且它會很有禮貌地等使用者打完字才開口糾正。","Validation style":"驗證風格","feedback timing":"提示時機",":user-valid (kind)":":user-valid（溫柔）",":valid (eager)":":valid（急躁）","Switch to \"eager\" and start typing an email — it turns angry red on the first keystroke. That's why <code>:user-valid</code> exists.":"切到「急躁」再開始打 email——你才按第一個鍵它就氣得變紅。這就是 <code>:user-valid</code> 存在的理由。","Email":"電子郵件","Needs an @ and a domain.":"需要有 @ 和網域。","Password":"密碼","8+ characters.":"至少 8 個字元。","Create account":"建立帳號","<span class=\"n\">11</span>Colour, depth &amp; glass":"<span class=\"n\">11</span>色彩、層次與玻璃感","<strong>Visual polish is mostly four properties.</strong> Gradients for colour interest, <code>box-shadow</code> for depth, <code>backdrop-filter</code> for that frosted-glass look, and <code>border-radius</code> for softness. Turn the knobs until it looks like an app you'd want to use.":"<strong>視覺質感，大部分就是四個屬性。</strong>漸層（gradient）製造色彩變化、<code>box-shadow</code> 製造層次、<code>backdrop-filter</code> 做出毛玻璃、<code>border-radius</code> 讓邊角變柔和。轉動旋鈕，直到它看起來像你會想用的 App。","Surface designer":"表面設計器","hue <b id=\"v-hue\">225</b>":"色相 hue <b id=\"v-hue\">225</b>","radius <b id=\"v-vrad\">20px</b>":"圓角 radius <b id=\"v-vrad\">20px</b>","shadow depth <b id=\"v-shadow\">24</b>":"陰影深度 <b id=\"v-shadow\">24</b>","glass blur <b id=\"v-blur\">10px</b>":"毛玻璃模糊 <b id=\"v-blur\">10px</b>","gradient angle <b id=\"v-ang\">135deg</b>":"漸層角度 <b id=\"v-ang\">135deg</b>","Surface":"表面","Every app UI is this, repeated.":"每一個 App 介面，都是這個東西重複而已。","<span class=\"n\">12</span>Transition &amp; animation":"<span class=\"n\">12</span>轉場（transition）與動畫（animation）","<strong>A transition is CSS saying \"don't jump — glide.\"</strong> You change a value, and the browser fills in every frame between the old and new. Timing and easing are what separate \"cheap\" from \"expensive-feeling\". Under ~150ms feels twitchy; over ~500ms feels sluggish.":"<strong>轉場就是 CSS 在說：「不要用跳的，用滑的。」</strong>你改一個數值，瀏覽器會自動補上新舊之間的每一格畫面。時間長度與緩動曲線（easing），就是「廉價」和「高級」的差別。低於約 150ms 會覺得毛躁；超過約 500ms 會覺得拖。","Timing":"時間","duration <b id=\"v-dur\">400ms</b>":"時間長度 duration <b id=\"v-dur\">400ms</b>","easing":"緩動 easing","springy":"彈性","what changes":"改變什麼","position":"位置","scale":"縮放","rotate":"旋轉","everything":"全部","▶ Play":"▶ 播放","Result — click Play, or click the ball":"結果 — 按播放，或直接點那顆球","<b>Performance rule:</b> animate <code>transform</code> and <code>opacity</code>. The GPU handles those without re-doing layout. Animating <code>width</code>, <code>top</code> or <code>margin</code> forces the browser to recalculate the whole page every frame — that's where jank comes from.":"<b>效能守則：</b>只動 <code>transform</code> 和 <code>opacity</code>。這兩個由 GPU 處理，不用重算版面。去動 <code>width</code>、<code>top</code> 或 <code>margin</code>，會逼瀏覽器每一格都重算整頁——卡頓（jank）就是這樣來的。","<span class=\"n\">13</span>Scroll-driven effects":"<span class=\"n\">13</span>捲動驅動的效果","<strong>Scroll position is now an animation timeline.</strong> Things that used to need a JavaScript library — progress bars, reveal-on-scroll, parallax, scroll-snapping carousels — are CSS one-liners in modern browsers, and they run on the compositor so they never stutter.":"<strong>捲動位置現在就是一條動畫時間軸。</strong>以前要靠 JavaScript 套件才做得到的東西——進度條、滑到才出現、視差、會自動對齊的輪播——在現代瀏覽器裡都是一行 CSS，而且跑在合成器上，永遠不會卡。","<b>1. Scroll progress.</b> That bar pinned to the top of your window is <code>animation-timeline: scroll()</code> — three lines of CSS, no JS.":"<b>1. 捲動進度。</b>釘在視窗最上方那條線，就是 <code>animation-timeline: scroll()</code>——三行 CSS，沒有 JS。","<b>2. Reveal on scroll.</b> These cards fade and rise as they enter the viewport, driven by <code>animation-timeline: view()</code>:":"<b>2. 滑到才出現。</b>下面這些卡片會在進入畫面時淡入並上升，靠的是 <code>animation-timeline: view()</code>：","🎯 Enter":"🎯 進場","Animation is tied to <em>how far into view</em> the element is — not to a timer.":"動畫綁的是元素<em>進入畫面多少</em>，而不是一個計時器。","⚡️ Smooth":"⚡️ 順暢","Runs off the main thread, so it stays at 60fps while JavaScript is busy.":"不跑在主執行緒上，所以就算 JavaScript 很忙，它還是 60fps。","♿️ Respectful":"♿️ 貼心","All of it is disabled automatically if the visitor asked for reduced motion.":"如果訪客在系統裡要求「減少動態」，這些會自動全部關掉。","<b>3. Scroll snap.</b> Drag this sideways — it locks neatly to each panel, again pure CSS:":"<b>3. 捲動對齊。</b>把下面往旁邊拖——它會漂亮地卡在每一格上，一樣是純 CSS：","<b>Fallback thinking:</b> in a browser that doesn't support scroll timelines, these elements simply appear normally. That's <em>progressive enhancement</em> — the site works everywhere, and gets nicer where it can.":"<b>降級思維：</b>在不支援捲動時間軸的瀏覽器裡，這些元素就只是正常出現而已。這叫做<em>漸進增強（progressive enhancement）</em>——網站在哪裡都能用，能變漂亮的地方才變漂亮。","<span class=\"n\">14</span>Events — how a page listens":"<span class=\"n\">14</span>事件（events）— 頁面怎麼「聽」","<strong>JavaScript is mostly waiting.</strong> You tell the browser \"when <em>this</em> happens to <em>that</em> element, run <em>this</em> function\". Clicks, typing, hovering, scrolling, resizing — every interactive thing you've ever used is that one pattern, repeated.":"<strong>JavaScript 大部分時間都在等。</strong>你告訴瀏覽器：「當<em>這件事</em>發生在<em>那個元素</em>上，就執行<em>這個函式</em>。」點擊、打字、滑過、捲動、改變視窗大小——你用過的每一個互動功能，都是這一個模式的重複。","Listen for…":"監聽這些…","Clear log":"清除紀錄","Interact with the panel on the right. Click it, hover it, focus it and press a key.":"去玩右邊那塊面板。點它、滑過它、用 Tab 選它然後按個鍵。","<span class=\"n\">15</span>State drives the UI":"<span class=\"n\">15</span>狀態（state）驅動畫面","<strong>This is the idea that everything modern is built on.</strong> Don't poke at the page directly. Keep a plain object — <em>the state</em> — that describes what's true right now. Change the state, and let one <code>render()</code> function redraw from it. React, Vue, Svelte and Flutter are all elaborate versions of this single sentence.":"<strong>現代前端的一切，都建立在這個觀念上。</strong>不要直接去戳畫面。維護一個單純的物件——也就是<em>狀態（state）</em>——它描述「現在是什麼情況」。改變狀態，然後讓一個 <code>render()</code> 函式依據它重畫。React、Vue、Svelte、Flutter，全都只是這一句話的複雜版。","Mutate the state":"改變狀態","count + 1":"count + 1","count − 1":"count − 1","state.label":"state.label","Reset state":"重設狀態","Result — rendered <em>only</em> from the object below":"結果 — <em>完全</em>依據下面那個物件畫出來","state (live)":"state（即時）","<b>Why this matters:</b> with direct DOM poking, ten features means ten places that can disagree with each other. With state + render, there is exactly <em>one</em> source of truth, and the screen is just a photograph of it.":"<b>為什麼這很重要：</b>如果直接去改 DOM，十個功能就有十個地方可能互相打架。用「狀態＋重畫」，就只有<em>一個</em>真實來源，而畫面只是它的一張照片。","<span class=\"n\">16</span>Putting it together: a real reactive app":"<span class=\"n\">16</span>全部組起來：一個真的反應式應用","<strong>Everything above, in one working thing.</strong> Grid layout, native inputs, events, state, transitions and derived data (that filter and counter aren't stored — they're <em>computed</em> from state every render). About 40 lines of JavaScript.":"<strong>把上面全部放進一個會動的東西裡。</strong>Grid 排版、原生輸入元件、事件、狀態、轉場，還有衍生資料（那個篩選器和計數器並沒有被儲存——它們每次重畫時都是從狀態<em>算出來</em>的）。大約 40 行 JavaScript。","Add":"新增","All":"全部","Active":"未完成","Done":"已完成","0 left":"還剩 0 項","Clear done":"清除已完成","Nothing here yet. Add something above. ↑":"這裡還是空的。從上面新增一項吧。↑","<b>Look for the pattern:</b> every button just edits the <code>todos</code> array and calls <code>render()</code>. No button knows what the screen looks like. That separation is the entire reason front-end frameworks exist.":"<b>注意這個模式：</b>每個按鈕只做兩件事——改 <code>todos</code> 陣列，然後呼叫 <code>render()</code>。沒有任何一個按鈕知道畫面長什麼樣。這個「分離」就是前端框架存在的全部理由。","<span class=\"n\">17</span>2026 CSS superpowers":"<span class=\"n\">17</span>2026 的 CSS 超能力","<strong>If you learned CSS more than a couple of years ago, this section is the update.</strong> Each of these replaced something that used to require JavaScript, a build step, or a horrible hack.":"<strong>如果你學 CSS 是好幾年前的事，這一節就是你的更新包。</strong>下面每一項，都取代了以前需要 JavaScript、需要編譯工具、或需要某種可怕偏方才做得到的事。","The parent selector":"父層選擇器","Style an element based on what's <em>inside</em> it. Impossible for 20 years.":"依據元素<em>裡面</em>有什麼來設定它的樣式。這件事有二十年都做不到。","Sass, built in":"內建的 Sass","Nest rules natively. One less build tool in your project.":"原生支援巢狀寫法。你的專案少一個編譯工具。","Fluid everything":"什麼都能流動","Type and spacing that scale smoothly without a single breakpoint.":"字級和間距平滑縮放，一個斷點都不用寫。","Maths on colours":"對顏色做數學","Blend two colours in CSS — hover states derived from one brand colour.":"直接在 CSS 裡混合兩個顏色——整套 hover 樣式都能從一個品牌色推導出來。","Perceptual colour":"符合人眼的色彩","Lightness that actually looks equal across hues, plus wider-gamut screens.":"不同色相之間的明度看起來真的一致，還能用上更廣色域的螢幕。","Cascade layers":"層疊層級","Decide which stylesheet wins, on purpose, instead of fighting specificity.":"明確決定哪一份樣式表贏，而不是跟權重（specificity）纏鬥。","Native page transitions":"原生換頁動畫","Cross-fade or morph between states and pages — app feel, zero framework.":"在狀態與頁面之間淡入淡出或變形——App 的手感，零框架。","Cleaner selectors":"更乾淨的選擇器","Group selectors readably and control specificity deliberately.":"把選擇器整理得好讀，並刻意控制權重。","Play with <code>:has()</code> — the parent selector":"玩玩 <code>:has()</code> — 父層選擇器","Tick a card. The <em>card</em> restyles itself because it <em>has</em> a checked input inside it — and the <em>grid</em> restyles because it has a selected card inside it. No JavaScript is running here at all.":"勾一張卡片。那張<em>卡片</em>會自己改變樣式，因為它<em>裡面有</em>一個被勾選的 input；而整個<em>格線</em>也會改變，因為它裡面有一張被選中的卡片。這裡完全沒有任何 JavaScript 在跑。","🦫 Capybara":"🦫 水豚","🦦 Otter":"🦦 水獺","🦥 Sloth":"🦥 樹懶","View Transitions — app-like state changes":"View Transitions — 像 App 一樣的狀態切換","Click to reorder. The browser takes a snapshot before and after, then animates every item to its new home automatically. This is <code>document.startViewTransition()</code>, and it works across full page navigations too.":"點一下重新排序。瀏覽器會拍下前後兩張快照，然後自動把每個項目動畫移到新位置。這就是 <code>document.startViewTransition()</code>，它連整頁換頁都能用。","🔀 Shuffle with a view transition":"🔀 用 view transition 洗牌","Shuffle without one":"不用它直接洗牌","<b>Heads up:</b> your browser doesn't support View Transitions yet, so the shuffle just snaps. The page still works — that's progressive enhancement.":"<b>提醒：</b>你的瀏覽器還不支援 View Transitions，所以洗牌會直接跳。但頁面照常運作——這就是漸進增強。","Fluid type with <code>clamp()</code>":"用 <code>clamp()</code> 做流動字級","One line replaces four breakpoints. Drag to resize the box — the heading scales continuously between a floor and a ceiling.":"一行取代四個斷點。拖動改變方框寬度——標題會在下限和上限之間連續縮放。","clamp(min, ideal, max)":"clamp(最小, 理想, 最大)","container width <b id=\"v-clw\">600px</b>":"容器寬度 <b id=\"v-clw\">600px</b>","min <b id=\"v-clmin\">1.1rem</b>":"最小 min <b id=\"v-clmin\">1.1rem</b>","ideal <b id=\"v-clid\">5cqw</b>":"理想 ideal <b id=\"v-clid\">5cqw</b>","max <b id=\"v-clmax\">3rem</b>":"最大 max <b id=\"v-clmax\">3rem</b>","<span class=\"n\">18</span>Cheat sheet, then go build":"<span class=\"n\">18</span>速查表，然後去做東西","Centre anything":"把任何東西置中","Auto-responsive gallery":"自動響應的相簿","Fluid type":"流動字級","Smooth hover":"平滑的滑過效果","Respect the user":"尊重使用者","Six habits that make you look senior":"六個讓你看起來像資深工程師的習慣","<b>Use the right element.</b> <code>&lt;button&gt;</code> for actions, <code>&lt;a&gt;</code> for navigation. Accessibility mostly comes free if you do.":"<b>用對元素。</b>動作用 <code>&lt;button&gt;</code>，換頁用 <code>&lt;a&gt;</code>。做對了，無障礙大部分都是免費附贈的。","<b>Design mobile-first.</b> Write the narrow layout, then add complexity upward with <code>min-width</code> queries.":"<b>從手機開始設計。</b>先寫窄版的版面，再用 <code>min-width</code> 查詢往上疊加複雜度。","<b>Use CSS custom properties</b> for colour and spacing. One change updates the whole site.":"<b>顏色和間距都用 CSS 自訂屬性（custom properties）。</b>改一個地方，整站跟著更新。","<b>Animate <code>transform</code> and <code>opacity</code> only.</b> Everything else risks jank.":"<b>只對 <code>transform</code> 和 <code>opacity</code> 做動畫。</b>其他的都有卡頓風險。","<b>Test with the keyboard.</b> Tab through your page. If you can't reach something, neither can a lot of your users.":"<b>用鍵盤測試。</b>按 Tab 走過你的頁面。如果你到不了某個地方，很多使用者也到不了。","<b>Check <a href=\"https://caniuse.com\" rel=\"noopener\" target=\"_blank\">caniuse.com</a> and Baseline</b> before shipping a shiny new feature, and provide a plain fallback.":"<b>上線新功能前，先查 <a href=\"https://caniuse.com\" rel=\"noopener\" target=\"_blank\">caniuse.com</a> 和 Baseline</b>，並準備一個樸素的備案。","Putting this online (Cloudflare Pages)":"把它放上線（Cloudflare Pages）","This whole site is a single <code>index.html</code> with no build step, so deploying is genuinely a drag-and-drop:":"整個網站就是一個 <code>index.html</code>，沒有任何編譯步驟，所以部署真的就是拖曳而已：","Put <code>index.html</code> in a folder on its own.":"把 <code>index.html</code> 單獨放進一個資料夾。","Go to the Cloudflare dashboard → <b>Workers &amp; Pages</b> → <b>Create</b> → <b>Pages</b> → <b>Upload assets</b>.":"到 Cloudflare 控制台 → <b>Workers &amp; Pages</b> → <b>Create</b> → <b>Pages</b> → <b>Upload assets</b>。","Drag the folder in, name the project, hit deploy. You get a free <code>*.pages.dev</code> URL with HTTPS and a global CDN.":"把資料夾拖進去、取個專案名稱、按下部署。你會拿到一個免費的 <code>*.pages.dev</code> 網址，含 HTTPS 和全球 CDN。","Prefer git? Push the folder to GitHub and connect the repo instead — leave the build command empty and set the output directory to the folder. Every push then redeploys itself.":"習慣用 git？那就把資料夾推上 GitHub 再連結該儲存庫——建置指令留空，輸出目錄設成那個資料夾。之後每次 push 都會自動重新部署。","CLI alternative: <code>npx wrangler pages deploy .</code> from inside the folder.":"指令列做法：在資料夾裡執行 <code>npx wrangler pages deploy .</code>。","<b>Built as one self-contained HTML file</b> — view source and read the whole thing; that's the best next lesson. Nothing here needs a framework, a bundler, or an install.":"<b>整份做成一個獨立的 HTML 檔</b>——按「檢視原始碼」把它整個讀一遍，那就是你最好的下一課。這裡沒有任何東西需要框架、打包工具或安裝。","Next stops: <a href=\"https://developer.mozilla.org/en-US/docs/Learn\" rel=\"noopener\" target=\"_blank\">MDN Learn</a> · <a href=\"https://web.dev/learn/css\" rel=\"noopener\" target=\"_blank\">web.dev/learn/css</a> · <a href=\"https://flexboxfroggy.com\" rel=\"noopener\" target=\"_blank\">Flexbox Froggy</a> · <a href=\"https://cssgridgarden.com\" rel=\"noopener\" target=\"_blank\">Grid Garden</a>":"下一站：<a href=\"https://developer.mozilla.org/zh-TW/docs/Learn\" rel=\"noopener\" target=\"_blank\">MDN Learn</a> · <a href=\"https://web.dev/learn/css\" rel=\"noopener\" target=\"_blank\">web.dev/learn/css</a> · <a href=\"https://flexboxfroggy.com\" rel=\"noopener\" target=\"_blank\">Flexbox Froggy</a> · <a href=\"https://cssgridgarden.com\" rel=\"noopener\" target=\"_blank\">Grid Garden</a>","📱 Mobile layout":"📱 手機版面","📲 Tablet layout":"📲 平板版面","🖥 Desktop layout":"🖥 桌機版面","A free teaching resource from <a href=\"../index.html\">PXT Tech Studio</a> — where domain expertise meets AI.":"這是 <a href=\"../index.html\">PXT Tech Studio</a> 提供的免費教學資源 — 專業領域與 AI 相遇的地方。","© <span id=\"pxt-yr\"></span> PXT Tech Studio, LLC · <a href=\"mailto:contact@pxttechstudio.com\">contact@pxttechstudio.com</a>":"© <span id=\"pxt-yr\"></span> PXT Tech Studio, LLC · <a href=\"mailto:contact@pxttechstudio.com\">contact@pxttechstudio.com</a>","Back to the studio":"回到工作室"},"text":{"HTML — the content":"HTML — 內容","CSS — the styling":"CSS — 樣式","JS — the behaviour":"JS — 行為","Show the layers":"顯示各層顏色","<header>":"<header> 頁首","<nav>":"<nav> 選單","<main>":"<main> 主內容","<aside>":"<aside> 側欄","<footer>":"<footer> 頁尾","Use plain <div>s instead":"改用普通的 <div>","flex-wrap":"換行 flex-wrap","checkbox as a switch":"把 checkbox 做成開關","Live strength meter":"即時強度條","Glass mode":"玻璃模式","Keyframe loop":"keyframe 循環","click":"點擊 click","dblclick":"雙擊 dblclick","pointermove":"移動 pointermove","pointerenter / leave":"進入／離開 enter / leave","keydown":"按鍵 keydown","state.dark":"state.dark"},"attr":{"What needs doing?":"有什麼要做的？","New task":"新增項目","you@example.com":"you@example.com","at least 8 characters":"至少 8 個字元","type 'ba'…":"試著輸入 ba…"},"js":{"Nothing exists. HTML is what <em>is</em>.":"什麼都不存在。HTML 就是「有什麼」。","Capybara Fan Club":"水豚後援會","Join 12,000 extremely relaxed members.":"加入 12,000 位極度放鬆的成員。","Join":"加入","🎉 Welcome! You are member #{n}.":"🎉 歡迎！你是第 {n} 號成員。","Nothing happens. Without JS, a button is just a shape.":"什麼都沒發生。沒有 JS，按鈕只是一個形狀。","HTML — structure":"HTML — 結構","CSS — appearance":"CSS — 外觀","JavaScript — behaviour":"JavaScript — 行為","everything is off — a blank page":"全部關掉了 — 一張白紙","the four layers of every element":"每個元素的四層","space inside":"內側空間","space outside":"外側空間","the top band":"最上面那條","links to elsewhere":"通往其他地方的連結","a grid: 1fr + 280px":"一個 grid：1fr + 280px","exactly one per page":"每頁只能有一個","secondary, not the story":"次要的，不是主角","the bottom band":"最下面那條","identical on screen — but every landmark is gone":"畫面一模一樣 — 但所有地標都不見了","five landmarks the browser and screen readers understand":"瀏覽器與螢幕閱讀器看得懂的五個地標","Home":"首頁","Docs":"文件","Pricing":"價格","About":"關於","Lessons":"課程","Layout":"版面","Building blocks":"常見區塊","Product":"產品","Features":"功能","Company":"公司","Careers":"徵才","Legal":"法律","Privacy":"隱私權","Terms":"使用條款","made with three languages.":"用三種語言做的。","pushes the links to the right":"把連結推到右邊","The calmest way to learn the web":"學網頁最放鬆的方式","Turn a knob, read the code, understand it. No install.":"轉個旋鈕、讀一下程式碼、就懂了。免安裝。","Get started":"開始使用","sidebar — 220px, fixed":"側欄 — 220px，固定","main — 1fr, takes the rest":"主欄 — 1fr，吃掉剩下的","phone first: one column":"手機優先：先做一欄","Item":"項目","A short description.":"一段簡短的說明。","no media query needed":"不需要媒體查詢","How much does it cost?":"這要多少錢？","Nothing. It is one HTML file.":"不用錢。它就是一個 HTML 檔。","Do I need to install anything?":"需要安裝什麼嗎？","No. A browser is the whole toolchain.":"不用。瀏覽器就是全部的工具鏈。","Can I use this on a phone?":"手機可以看嗎？","Yes — try rotating your device.":"可以 — 把手機轉個方向試試。","Overview":"總覽","Install":"安裝","FAQ":"常見問題","The first panel. Click the other tabs — no script is running.":"第一個面板。點點其他頁籤 — 完全沒有腳本在跑。","Nothing to install. Open the file in a browser.":"沒東西要裝。用瀏覽器打開檔案就好。","Ask anything. The source is right there.":"什麼都可以問。原始碼就在那裡。",":has() reads the checked radio":":has() 讀取被勾選的 radio","the last item is plain text — never a link to the current page":"最後一項是純文字 — 絕不連到自己這一頁","span every column":"橫跨所有欄","A flex row. The trick is <code>margin-left:auto</code> on the link list — it eats all the free space and shoves the links right.":"一列 flex。訣竅是在連結清單上加 <code>margin-left:auto</code> — 它會吃掉所有剩餘空間，把連結推到右邊。","The first screen. One big promise, one supporting line, one button. Fluid type with <code>clamp()</code> keeps it readable on a phone.":"第一眼看到的畫面。一句大承諾、一句補充、一顆按鈕。用 <code>clamp()</code> 做流動字級，在手機上也讀得清楚。","Sidebar plus content. One fixed track, one flexible track — then a media query stacks them on a phone.":"側欄加內容。一欄固定、一欄彈性 — 再用媒體查詢讓它們在手機上疊起來。","The most reusable block on the web. <code>auto-fit</code> + <code>minmax()</code> means it reflows at every width with no media query.":"網路上重複使用率最高的區塊。<code>auto-fit</code> + <code>minmax()</code> 讓它在任何寬度都自動重排，不用媒體查詢。","Built from <code>&lt;details&gt;</code>. No JavaScript, keyboard accessible, and Ctrl+F can still find the hidden text.":"用 <code>&lt;details&gt;</code> 做的。不用 JavaScript、可用鍵盤操作，連 Ctrl+F 都搜得到收起來的文字。","Radio buttons in disguise. Only one can be checked, so <code>:has()</code> can show the matching panel — still zero JavaScript.":"其實是偽裝的 radio 按鈕。同時只能勾一個，所以 <code>:has()</code> 就能顯示對應的面板 — 一樣零 JavaScript。","A trail showing where you are. The current page is text, not a link — you do not link to the page you are on.":"一條顯示你在哪裡的路徑。目前這一頁是文字而不是連結 — 你不會連到自己身上。","A card grid that happens to live at the bottom. <code>auto-fit</code> again, so the columns collapse on a phone by themselves.":"其實就是一個放在最下面的卡片牆。一樣用 <code>auto-fit</code>，所以在手機上欄位會自己收合。","takes the leftover space":"吃掉剩下的空間","responsive with zero media queries":"零媒體查詢的響應式","fixed sidebar + flexible main":"固定側欄 + 彈性主欄","mobile first: write the simple layout, then add to it":"手機優先：先寫簡單的版面，再往上加","fluid — never jumps":"流動 — 永遠不會跳","≥ 700px → two columns, big heading. The media query is ON.":"≥ 700px → 兩欄、大標題。媒體查詢「生效中」。","< 700px → stacked, smaller heading. The media query is OFF.":"< 700px → 直式堆疊、小標題。媒體查詢「未生效」。","ACTIVE right now":"現在生效中","inactive at this width":"這個寬度下不生效","1. mark an element as a query container":"1. 先把某個元素標記為查詢容器","2. the card reacts to ITS OWN space, not the screen":"2. 卡片反應的是「自己的空間」，不是螢幕","ACTIVE":"生效中","inactive":"未生效","Narrow slot → compact stacked card.":"插槽很窄 → 精簡的直式卡片。","Wide slot → full horizontal card.":"插槽夠寬 → 完整的橫式卡片。","all native — zero dependencies":"全部原生 — 零相依套件","a modal — focus trap, Escape, backdrop: all free":"強制對話框 — 焦點鎖定、Esc 關閉、背景遮罩：全部免費","a popover — no JS at all, just two attributes":"浮層 — 完全不用 JS，兩個屬性就好","a disclosure — searchable, accessible, native":"摺疊元件 — 可搜尋、無障礙、原生","the browser validates; CSS reacts":"瀏覽器負責驗證；CSS 負責反應","waits until the user has finished — kind":"等使用者打完才說話 — 溫柔","fires on the very first keystroke — harsh":"第一個按鍵就開罵 — 急躁","8+ characters.":"至少 8 個字元。","Weak — add length.":"太弱 — 再長一點。","Fair — mix upper and lower case.":"普通 — 混合大小寫。","Good — add a number.":"不錯 — 再加個數字。","Strong. 💪":"很強。💪","✅ Valid — in a real app this would now be sent to a server.":"✅ 通過 — 在真正的應用裡，現在就會送到伺服器。","⚠️ Fix the highlighted fields first.":"⚠️ 請先修正標紅的欄位。","frosted glass":"毛玻璃","change a value; the browser fills in the frames":"改一個值；瀏覽器負責補上中間每一格","animate transform + opacity only — they run on the GPU":"只動 transform 和 opacity — 它們跑在 GPU 上","a keyframe animation — a scripted sequence, on repeat":"keyframe 動畫 — 一段寫好的流程，不斷重複","click":"點擊","dblclick — two fast clicks":"雙擊 — 兩次快速點擊","pointermove":"移動","pointerenter — cursor arrived":"進入 — 游標來了","pointerleave — cursor left":"離開 — 游標走了","keydown":"按鍵","focused — now type something":"已聚焦 — 現在打點什麼","interact with me":"來跟我互動","the entire interactivity model, in one line":"整個互動模型，就這一行","1. one object is the single source of truth":"1. 一個物件就是唯一的真實來源","2. one function paints the screen from it":"2. 一個函式依據它畫出畫面","3. never touch the DOM directly — change state, re-render":"3. 永遠不要直接碰 DOM — 改狀態，然後重畫","Understand flexbox":"搞懂 flexbox","Ship something ugly but working":"先做出一個醜但能動的東西","Deploy it to Cloudflare Pages":"部署到 Cloudflare Pages","{n} tasks left":"還剩 {n} 項","one line replaces four breakpoints":"一行取代四個斷點","cqw = 1% of the container width; vw = 1% of the screen width":"cqw = 容器寬度的 1%；vw = 螢幕寬度的 1%","Picked up where you left off":"從上次離開的地方繼續","Start from the top":"回到最上面","Forget every setting, your place on the page, and the todo list?":"要清除所有設定、閱讀進度和待辦清單嗎？","Night mode — click for day":"夜間模式 — 點一下切換日間","Day mode — click for night":"日間模式 — 點一下切換夜間"}};
+
+/* ============================================================
+   i18n — English / 繁體中文
+   ------------------------------------------------------------
+   Elements that contain a live control (an <input> with listeners
+   already attached) get their TEXT NODES swapped; everything else
+   gets innerHTML swapped. Originals are kept so EN is lossless.
+   ============================================================ */
+let LANG = 'en';
+try { if(localStorage.getItem('fep.lang') === 'zh') LANG = 'zh'; } catch(e) {}
+const norm = x => String(x == null ? '' : x).replace(/\s+/g, ' ').trim();
+const T = en => (LANG === 'zh' && ZH.js[norm(en)]) ? ZH.js[norm(en)] : en;
+
+const I18N_SEL = 'main h1, main h2, main h3, main h4, main p, main li, main summary, ' +
+  'main .stage-label, main .kicker, main label, main output, main .hint, main .seg button, ' +
+  'main .pill, main .code-title, main .has-card span, footer p, #toc a, .sidebar .tag, .btn, .tier-badge span, .pxt-back';
+const LIVE_SEL = 'input, select, textarea, progress, datalist, button, dialog';
+const DYNAMIC  = '#bl-stage, #layer-stage, #todo-list, #vt-grid, #ev-log, .resume, pre, .code';
+const ATTRS = [['#todo-input','placeholder'], ['#todo-input','aria-label'],
+               ['#f-email','placeholder'], ['#f-pass','placeholder'], ['#c-list','placeholder']];
+let ORIGINALS = null;
+
+function collectI18n(){
+  ORIGINALS = [];
+  const done = new Set();
+  $$(I18N_SEL).forEach(el => {
+    if(done.has(el) || el.closest(DYNAMIC)) return;
+    if(el.querySelector('section, pre')) return;
+    done.add(el);
+    if(el.querySelector(LIVE_SEL)){
+      [...el.childNodes].forEach(nd => {
+        if(nd.nodeType === 3 && norm(nd.nodeValue))
+          ORIGINALS.push({node:nd, en:nd.nodeValue, kind:'text'});
+      });
+    } else {
+      ORIGINALS.push({node:el, en:el.innerHTML, kind:'html'});
+    }
+  });
+  ATTRS.forEach(([sel, attr]) => {
+    const el = $(sel);
+    if(el && el.hasAttribute(attr)) ORIGINALS.push({node:el, en:el.getAttribute(attr), kind:'attr', attr});
+  });
+}
+
+function applyLang(){
+  const zh = LANG === 'zh';
+  ORIGINALS.forEach(o => {
+    const key = norm(o.en);
+    if(o.kind === 'html'){
+      o.node.innerHTML = (zh && ZH.html[key]) ? ZH.html[key] : o.en;
+    } else if(o.kind === 'text'){
+      const hit = zh && ZH.text[key];
+      o.node.nodeValue = hit
+        ? (/^\s/.test(o.en) ? ' ' : '') + hit + (/\s$/.test(o.en) ? ' ' : '')
+        : o.en;
+    } else {
+      o.node.setAttribute(o.attr, (zh && ZH.attr[key]) ? ZH.attr[key] : o.en);
+    }
+  });
+  document.documentElement.lang = zh ? 'zh-Hant' : 'en';
+  document.body.classList.toggle('lang-zh', zh);
+  const b = $('#lang-btn');
+  b.textContent = zh ? 'EN' : '中';
+  b.title = zh ? 'Switch to English' : '切換為繁體中文';
+  dispatchEvent(new Event('langchange'));
+}
+
+/* ============================================================
+   PERSISTENCE — the page remembers everything you touched
+   ------------------------------------------------------------
+   One localStorage key holds a plain object. Controls are restored
+   BEFORE any demo reads the DOM, so every demo just initialises
+   itself from the (already restored) markup.
+   ============================================================ */
+const STORE_KEY = 'fep.state.v1';
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch(e) { saved = {}; }
+let saveTimer;
+function flush(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch(e){} }
+function remember(k, v){ saved[k] = v; clearTimeout(saveTimer); saveTimer = setTimeout(flush, 200); }
+const recall = (k, d) => (k in saved ? saved[k] : d);
+
+/* never store anything a person typed about themselves */
+const PRIVATE = new Set(['todo-input','f-email','f-pass']);
+const storable = el => el.id && !PRIVATE.has(el.id) && el.type !== 'password' && el.matches('input, select');
+const readEl  = el => el.type === 'checkbox' ? el.checked : el.value;
+
+/* 1 — restore, before anything else runs */
+(function restore(){
+  $$('input[id], select[id]').forEach(el => {
+    const k = 'ctl.' + el.id;
+    if(!(k in saved) || PRIVATE.has(el.id)) return;
+    if(el.type === 'checkbox') el.checked = !!saved[k]; else el.value = saved[k];
+  });
+  $$('.seg[data-seg]').forEach(wrap => {
+    const v = saved['seg.' + wrap.dataset.seg];
+    if(v == null) return;
+    const btn = [...wrap.querySelectorAll('button')].find(b => b.dataset.v === v);
+    if(btn) $$('button', wrap).forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+  });
+  $$('details[id]').forEach(d => { const v = saved['det.' + d.id]; if(v != null) d.open = !!v; });
+})();
+
+/* 2 — record every future change, from one listener at the top of the tree */
+['input','change'].forEach(type =>
+  document.addEventListener(type, e => {
+    if(storable(e.target)) remember('ctl.' + e.target.id, readEl(e.target));
+  }, true)
+);
+document.addEventListener('toggle', e => {
+  if(e.target.matches && e.target.matches('details[id]')) remember('det.' + e.target.id, e.target.open);
+}, true);
+
+/* ============================================================
+   00 — three languages
+   ============================================================ */
+(function(){
+  const stage = $('#layer-stage'), out = $('#layer-code');
+  const boxes = ['#l-html','#l-css','#l-js'].map(s => $(s));
+  let clicks = 0;
+  function render(){
+    const [h,c,j] = boxes.map(b => b.checked);
+    if(!h){
+      stage.innerHTML = '<p style="color:var(--muted);text-align:center;margin:0">' + T('Nothing exists. HTML is what <em>is</em>.') + '</p>';
+    } else {
+      stage.innerHTML =
+        '<div class="mini-card'+(c?' styled':'')+'">'+
+          '<h3>' + T('Capybara Fan Club') + '</h3>'+
+          '<p>' + T('Join 12,000 extremely relaxed members.') + '</p>'+
+          '<button id="mini-btn">' + T('Join') + '</button>'+
+          '<p class="mini-out" id="mini-out"></p>'+
+        '</div>';
+      const btn = $('#mini-btn'), msg = $('#mini-out');
+      btn.addEventListener('click', () => {
+        if(j){ clicks++; msg.textContent = T('🎉 Welcome! You are member #{n}.').replace('{n}', 12000+clicks); }
+        else { msg.textContent = T('Nothing happens. Without JS, a button is just a shape.'); }
+      });
+    }
+    let code = '';
+    if(h) code += CM('HTML — structure')+'\n'+H(esc('<div class="card">\n  <h3>Capybara Fan Club</h3>\n  <button>Join</button>\n</div>'))+'\n\n';
+    if(c) code += CM('CSS — appearance')+'\n'+S('.card')+'\n'+P('background','#1f2536')+'\n'+P('border-radius','14px')+'\n'+P('padding','18px 20px')+'\n}\n\n';
+    if(j) code += CM('JavaScript — behaviour')+'\n<span class="kw">const</span> btn = document.querySelector(<span class="str">"button"</span>);\nbtn.addEventListener(<span class="str">"click"</span>, () =&gt; {\n  msg.textContent = <span class="str">"Welcome!"</span>;\n});';
+    out.innerHTML = code || CM('everything is off — a blank page');
+  }
+  boxes.forEach(b => b.addEventListener('change', render));
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   01 — box model
+   ============================================================ */
+(function(){
+  const el = $('#bm-el'), mar = $('#bm-margin'), out = $('#bm-code');
+  const ks = {pad:$('#k-pad'), bor:$('#k-bor'), mar:$('#k-mar'), rad:$('#k-rad')};
+  function render(){
+    const p=+ks.pad.value, b=+ks.bor.value, m=+ks.mar.value, r=+ks.rad.value;
+    const layers = $('#k-layers').checked;
+    $('#v-pad').textContent = p+'px'; $('#v-bor').textContent = b+'px';
+    $('#v-mar').textContent = m+'px'; $('#v-rad').textContent = r+'px';
+    el.style.padding = p+'px'; el.style.borderWidth = b+'px'; el.style.borderRadius = r+'px';
+    mar.style.padding = m+'px';
+    el.classList.toggle('plain', !layers);
+    mar.classList.toggle('plain', !layers);
+    out.innerHTML = CM('the four layers of every element')+'\n'+S('.box')+'\n'+
+      P('padding', p+'px')+'   '+CM('space inside')+'\n'+
+      P('border', b+'px solid #5ddba0')+'\n'+
+      P('margin', m+'px')+'    '+CM('space outside')+'\n'+
+      P('border-radius', r+'px')+'\n}';
+  }
+  Object.values(ks).forEach(k => k.addEventListener('input', render));
+  $('#k-layers').addEventListener('change', render);
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   02 — page anatomy
+   ============================================================ */
+(function(){
+  const page = $('#an-page'), body = page.querySelector('.an-body'), out = $('#an-code');
+  const parts = {'an-header':'.an-h','an-nav':'.an-n','an-main':'.an-m','an-aside':'.an-a','an-footer':'.an-f'};
+  const on = id => $('#' + id).checked;
+  function render(){
+    Object.entries(parts).forEach(([id, sel]) => page.querySelector(sel).classList.toggle('off', !on(id)));
+    const side = segVal('an-side');
+    body.className = 'an-body' + (side === 'right' ? '' : ' ' + side);
+    const plain = $('#an-divs').checked;
+    page.classList.toggle('plain', plain);
+
+    const open  = t => plain ? '<div class="' + t + '">' : '<' + t + '>';
+    const close = t => plain ? '</div>' : '</' + t + '>';
+    const rows = [['<body>','']];
+    if(on('an-header')) rows.push(['  ' + open('header') + '…' + close('header'), T('the top band')]);
+    if(on('an-nav'))    rows.push(['  ' + open('nav')    + '…' + close('nav'),    T('links to elsewhere')]);
+    const two = on('an-main') && on('an-aside') && side !== 'below';
+    if(two) rows.push(['  <div class="columns">', T('a grid: 1fr + 280px')]);
+    const pad = two ? '    ' : '  ';
+    if(on('an-main'))  rows.push([pad + open('main')  + '…' + close('main'),  T('exactly one per page')]);
+    if(on('an-aside')) rows.push([pad + open('aside') + '…' + close('aside'), T('secondary, not the story')]);
+    if(two) rows.push(['  </div>','']);
+    if(on('an-footer')) rows.push(['  ' + open('footer') + '…' + close('footer'), T('the bottom band')]);
+    rows.push(['</body>','']);
+
+    out.innerHTML = CM(plain
+      ? 'identical on screen — but every landmark is gone'
+      : 'five landmarks the browser and screen readers understand') + '\n' +
+      rows.map(([m, c]) => H(esc(m)) + (c ? '   ' + CM(c) : '')).join('\n');
+  }
+  Object.keys(parts).forEach(id => $('#' + id).addEventListener('change', render));
+  $('#an-divs').addEventListener('change', render);
+  seg('an-side', render);
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   03 — the blocks every site is made of
+   ============================================================ */
+(function(){
+  const stage = $('#bl-stage'), out = $('#bl-code'), tip = $('#bl-tip');
+  const BLOCKS = {
+    navbar: {
+      tip: 'A flex row. The trick is <code>margin-left:auto</code> on the link list — it eats all the free space and shoves the links right.',
+      html:
+        '<nav class="d-nav">' +
+          '<span class="logo"><i></i>Capybara.io</span>' +
+          '<ul>' +
+            '<li><a href="#blocks" aria-current="page">' + T('Home') + '</a></li>' +
+            '<li><a href="#blocks">' + T('Docs') + '</a></li>' +
+            '<li><a href="#blocks">' + T('Pricing') + '</a></li>' +
+            '<li><a href="#blocks">' + T('About') + '</a></li>' +
+          '</ul>' +
+        '</nav>',
+      code:
+        H(esc('<nav>\n  <a class="logo">Capybara.io</a>\n  <ul>\n    <li><a href="/">Home</a></li>\n    …\n  </ul>\n</nav>')) + '\n\n' +
+        S('nav') + '\n' + P('display','flex') + '\n' + P('align-items','center') + '\n' + P('gap','14px') + '\n}\n' +
+        S('nav ul') + '\n' + P('display','flex') + '\n' + P('margin-left','auto') + '   ' + CM('pushes the links to the right') + '\n}'
+    },
+    hero: {
+      tip: 'The first screen. One big promise, one supporting line, one button. Fluid type with <code>clamp()</code> keeps it readable on a phone.',
+      html:
+        '<section class="d-hero">' +
+          '<h3>' + T('The calmest way to learn the web') + '</h3>' +
+          '<p>' + T('Turn a knob, read the code, understand it. No install.') + '</p>' +
+          '<button class="btn primary" type="button">' + T('Get started') + '</button>' +
+        '</section>',
+      code:
+        H(esc('<section class="hero">\n  <h1>The calmest way to learn the web</h1>\n  <p>Turn a knob, read the code.</p>\n  <a class="btn">Get started</a>\n</section>')) + '\n\n' +
+        S('.hero') + '\n' + P('text-align','center') + '\n' + P('padding','clamp(24px, 8vw, 96px) 18px') + '\n}\n' +
+        S('.hero h1') + '\n' + P('font-size','clamp(1.6rem, 5vw, 3.4rem)') + '\n}'
+    },
+    columns: {
+      tip: 'Sidebar plus content. One fixed track, one flexible track — then a media query stacks them on a phone.',
+      html:
+        '<div class="d-cols">' +
+          '<div class="side">' + T('sidebar — 220px, fixed') + '</div>' +
+          '<div class="body">' + T('main — 1fr, takes the rest') + '</div>' +
+        '</div>',
+      code:
+        S('.layout') + '\n' + P('display','grid') + '\n' + P('grid-template-columns','1fr') + '   ' + CM('phone first: one column') + '\n' + P('gap','10px') + '\n}\n\n' +
+        '<span class="kw">@media</span> (<span class="prop">min-width</span>: <span class="val">700px</span>) {\n' +
+        '  ' + S('.layout') + '\n  ' + P('grid-template-columns','220px 1fr') + '\n  }\n}'
+    },
+    cards: {
+      tip: 'The most reusable block on the web. <code>auto-fit</code> + <code>minmax()</code> means it reflows at every width with no media query.',
+      html:
+        '<div class="d-cards">' +
+          ['🦫','🌿','🍉','🛶'].map((e, i) =>
+            '<article><div class="thumb">' + e + '</div><b>' + T('Item') + ' ' + (i+1) + '</b><br>' +
+            '<span style="color:var(--muted)">' + T('A short description.') + '</span></article>').join('') +
+        '</div>',
+      code:
+        S('.cards') + '\n' + P('display','grid') + '\n' +
+        P('grid-template-columns','repeat(auto-fit, minmax(220px, 1fr))') + '   ' + CM('no media query needed') + '\n' +
+        P('gap','14px') + '\n}\n' +
+        S('.card:hover') + '\n' + P('transform','translateY(-3px)') + '\n}'
+    },
+    accordion: {
+      tip: 'Built from <code>&lt;details&gt;</code>. No JavaScript, keyboard accessible, and Ctrl+F can still find the hidden text.',
+      html:
+        '<div class="d-acc">' +
+          '<details open><summary>' + T('How much does it cost?') + '</summary><p>' + T('Nothing. It is one HTML file.') + '</p></details>' +
+          '<details><summary>' + T('Do I need to install anything?') + '</summary><p>' + T('No. A browser is the whole toolchain.') + '</p></details>' +
+          '<details><summary>' + T('Can I use this on a phone?') + '</summary><p>' + T('Yes — try rotating your device.') + '</p></details>' +
+        '</div>',
+      code:
+        H(esc('<details>\n  <summary>How much does it cost?</summary>\n  <p>Nothing. It is one HTML file.</p>\n</details>')) + '\n\n' +
+        S('summary') + '\n' + P('cursor','pointer') + '\n' + P('list-style','none') + '\n}\n' +
+        S('details[open] summary::after') + '\n' + P('transform','rotate(45deg)') + '\n}'
+    },
+    tabs: {
+      tip: 'Radio buttons in disguise. Only one can be checked, so <code>:has()</code> can show the matching panel — still zero JavaScript.',
+      html:
+        '<div class="d-tabs">' +
+          '<input type="radio" name="bltab" id="tb1" checked><input type="radio" name="bltab" id="tb2"><input type="radio" name="bltab" id="tb3">' +
+          '<div class="strip">' +
+            '<label for="tb1">' + T('Overview') + '</label>' +
+            '<label for="tb2">' + T('Install') + '</label>' +
+            '<label for="tb3">' + T('FAQ') + '</label>' +
+          '</div>' +
+          '<div class="panel" id="tp1">' + T('The first panel. Click the other tabs — no script is running.') + '</div>' +
+          '<div class="panel" id="tp2">' + T('Nothing to install. Open the file in a browser.') + '</div>' +
+          '<div class="panel" id="tp3">' + T('Ask anything. The source is right there.') + '</div>' +
+        '</div>',
+      code:
+        H(esc('<input type="radio" name="t" id="t1" checked>\n<label for="t1">Overview</label>\n<div id="p1">…</div>')) + '\n\n' +
+        S('.tabs:has(#t1:checked) #p1') + '\n' + P('display','block') + '   ' + CM(':has() reads the checked radio') + '\n}'
+    },
+    crumb: {
+      tip: 'A trail showing where you are. The current page is text, not a link — you do not link to the page you are on.',
+      html:
+        '<nav class="d-crumb" aria-label="Breadcrumb">' +
+          '<a href="#blocks">' + T('Home') + '</a><span class="sep">/</span>' +
+          '<a href="#blocks">' + T('Lessons') + '</a><span class="sep">/</span>' +
+          '<a href="#blocks">' + T('Layout') + '</a><span class="sep">/</span>' +
+          '<span aria-current="page">' + T('Building blocks') + '</span>' +
+        '</nav>',
+      code:
+        H(esc('<nav aria-label="Breadcrumb">\n  <a href="/">Home</a> /\n  <a href="/lessons">Lessons</a> /\n  <span aria-current="page">Building blocks</span>\n</nav>')) + '\n\n' +
+        CM('the last item is plain text — never a link to the current page')
+    },
+    footer: {
+      tip: 'A card grid that happens to live at the bottom. <code>auto-fit</code> again, so the columns collapse on a phone by themselves.',
+      html:
+        '<footer class="d-foot">' +
+          '<div><h4>' + T('Product') + '</h4><ul><li><a href="#blocks">' + T('Features') + '</a></li><li><a href="#blocks">' + T('Pricing') + '</a></li></ul></div>' +
+          '<div><h4>' + T('Company') + '</h4><ul><li><a href="#blocks">' + T('About') + '</a></li><li><a href="#blocks">' + T('Careers') + '</a></li></ul></div>' +
+          '<div><h4>' + T('Legal') + '</h4><ul><li><a href="#blocks">' + T('Privacy') + '</a></li><li><a href="#blocks">' + T('Terms') + '</a></li></ul></div>' +
+          '<div class="legal">© 2026 Capybara.io — ' + T('made with three languages.') + '</div>' +
+        '</footer>',
+      code:
+        S('footer') + '\n' + P('display','grid') + '\n' +
+        P('grid-template-columns','repeat(auto-fit, minmax(140px, 1fr))') + '\n' + P('gap','24px') + '\n}\n' +
+        S('footer .legal') + '\n' + P('grid-column','1 / -1') + '   ' + CM('span every column') + '\n}'
+    }
+  };
+  function render(){
+    const b = BLOCKS[segVal('bl-pick')] || BLOCKS.navbar;
+    stage.innerHTML = b.html;
+    tip.innerHTML = T(b.tip);
+    out.innerHTML = b.code;
+  }
+  seg('bl-pick', render);
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   04 — flexbox
+   ============================================================ */
+(function(){
+  const box = $('#fx-box'), item2 = $('#fx-item2'), out = $('#fx-code');
+  const st = {
+    dir:  segVal('fx-dir'), jc: segVal('fx-jc'), ai: segVal('fx-ai'), as: segVal('fx-as'),
+    gap:  +$('#k-fxgap').value, grow: +$('#k-fxgrow').value, wrap: $('#k-fxwrap').checked
+  };
+  function render(){
+    box.style.flexDirection = st.dir;
+    box.style.justifyContent = st.jc;
+    box.style.alignItems = st.ai;
+    box.style.gap = st.gap+'px';
+    box.style.flexWrap = st.wrap ? 'wrap' : 'nowrap';
+    item2.style.flexGrow = st.grow;
+    item2.style.alignSelf = st.as;
+    $('#v-fxgap').textContent = st.gap+'px';
+    $('#v-fxgrow').textContent = st.grow;
+    let c = S('.container')+'\n'+P('display','flex')+'\n'+P('flex-direction',st.dir)+'\n'+
+            P('justify-content',st.jc)+'\n'+P('align-items',st.ai)+'\n'+P('gap',st.gap+'px');
+    if(st.wrap) c += '\n'+P('flex-wrap','wrap');
+    c += '\n}';
+    if(st.grow>0 || st.as!=='auto'){
+      c += '\n\n'+S('.item-2')+'\n';
+      if(st.grow>0) c += P('flex-grow',st.grow)+'   '+CM('takes the leftover space')+'\n';
+      if(st.as!=='auto') c += P('align-self',st.as)+'\n';
+      c += '}';
+    }
+    out.innerHTML = c;
+  }
+  seg('fx-dir', v => { st.dir=v; render(); });
+  seg('fx-jc',  v => { st.jc=v;  render(); });
+  seg('fx-ai',  v => { st.ai=v;  render(); });
+  seg('fx-as',  v => { st.as=v;  render(); });
+  $('#k-fxgap').addEventListener('input', e => { st.gap=+e.target.value; render(); });
+  $('#k-fxgrow').addEventListener('input', e => { st.grow=+e.target.value; render(); });
+  $('#k-fxwrap').addEventListener('change', e => { st.wrap=e.target.checked; render(); });
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   03 — grid
+   ============================================================ */
+(function(){
+  const box = $('#g-box'), hero = $('#g-hero'), out = $('#g-code');
+  const st = {
+    cols: +$('#k-gcols').value, gap: +$('#k-ggap').value, mode: segVal('g-mode'),
+    span: +$('#k-gspan').value, rspan: +$('#k-grspan').value
+  };
+  function cols(){
+    if(st.mode==='sidebar') return '200px 1fr';
+    if(st.mode==='auto')    return 'repeat(auto-fit, minmax(120px, 1fr))';
+    return 'repeat('+st.cols+', 1fr)';
+  }
+  function render(){
+    box.style.gridTemplateColumns = cols();
+    box.style.gap = st.gap+'px';
+    hero.style.gridColumn = 'span '+st.span;
+    hero.style.gridRow = 'span '+st.rspan;
+    $('#v-gcols').textContent = st.cols;
+    $('#v-ggap').textContent = st.gap+'px';
+    $('#v-gspan').textContent = st.span;
+    $('#v-grspan').textContent = st.rspan;
+    let note = st.mode==='auto' ? '   '+CM('responsive with zero media queries')
+             : st.mode==='sidebar' ? '   '+CM('fixed sidebar + flexible main') : '';
+    let c = S('.grid')+'\n'+P('display','grid')+'\n'+P('grid-template-columns', cols())+note+'\n'+P('gap', st.gap+'px')+'\n}';
+    if(st.span>1 || st.rspan>1){
+      c += '\n\n'+S('.featured')+'\n';
+      if(st.span>1)  c += P('grid-column','span '+st.span)+'\n';
+      if(st.rspan>1) c += P('grid-row','span '+st.rspan)+'\n';
+      c += '}';
+    }
+    out.innerHTML = c;
+  }
+  seg('g-mode', v => { st.mode=v; render(); });
+  $('#k-gcols').addEventListener('input', e => { st.cols=+e.target.value; if(st.mode!=='equal'){ st.mode='equal'; $$('.seg[data-seg="g-mode"] button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.v==='equal'))); } render(); });
+  $('#k-ggap').addEventListener('input', e => { st.gap=+e.target.value; render(); });
+  $('#k-gspan').addEventListener('input', e => { st.span=+e.target.value; render(); });
+  $('#k-grspan').addEventListener('input', e => { st.rspan=+e.target.value; render(); });
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   04 — responsive
+   ============================================================ */
+(function(){
+  const frame = $('#rw-frame'), out = $('#rw-code'), status = $('#rw-status');
+  function render(w){
+    frame.style.width = 'min('+w+'px, 100%)';
+    $('#v-vw').textContent = w+'px';
+    const wide = frame.getBoundingClientRect().width >= 700;
+    status.textContent = T(wide
+      ? '≥ 700px → two columns, big heading. The media query is ON.'
+      : '< 700px → stacked, smaller heading. The media query is OFF.');
+    out.innerHTML =
+      CM('mobile first: write the simple layout, then add to it')+'\n'+
+      S('.layout')+'\n'+P('display','grid')+'\n'+P('grid-template-columns','1fr')+'\n'+P('gap','10px')+'\n}\n'+
+      S('.title')+'\n'+P('font-size','clamp(1rem, 5vw, 2.1rem)')+'   '+CM('fluid — never jumps')+'\n}\n\n'+
+      '<span class="kw">@media</span> (<span class="prop">min-width</span>: <span class="val">700px</span>) {   '+CM(wide?'ACTIVE right now':'inactive at this width')+'\n'+
+      '  '+S('.layout')+'\n  '+P('grid-template-columns','2fr 1fr')+'\n  }\n}';
+  }
+  $('#k-vw').addEventListener('input', e => render(+e.target.value));
+  seg('rw-preset', v => { $('#k-vw').value = v; render(+v); });
+  addEventListener('langchange', () => render(+$('#k-vw').value));
+  render(+$('#k-vw').value);
+})();
+
+/* ============================================================
+   05 — container queries
+   ============================================================ */
+(function(){
+  const slot = $('#cq-slot'), out = $('#cq-code'), status = $('#cq-status');
+  function render(w){
+    slot.style.width = 'min('+w+'px, 100%)';
+    $('#v-cq').textContent = w+'px';
+    const narrow = slot.getBoundingClientRect().width - 22 <= 380;
+    status.textContent = T(narrow ? 'Narrow slot → compact stacked card.' : 'Wide slot → full horizontal card.');
+    out.innerHTML =
+      CM('1. mark an element as a query container')+'\n'+
+      S('.slot')+'\n'+P('container-type','inline-size')+'\n}\n\n'+
+      CM('2. the card reacts to ITS OWN space, not the screen')+'\n'+
+      '<span class="kw">@container</span> (<span class="prop">max-width</span>: <span class="val">380px</span>) {   '+CM(narrow?'ACTIVE':'inactive')+'\n'+
+      '  '+S('.card')+'\n  '+P('flex-direction','column')+'\n  }\n'+
+      '  '+S('.blurb')+'\n  '+P('display','none')+'\n  }\n}';
+  }
+  $('#k-cq').addEventListener('input', e => render(+e.target.value));
+  addEventListener('langchange', () => render(+$('#k-cq').value));
+  render(+$('#k-cq').value);
+})();
+
+/* ============================================================
+   06 — native controls
+   ============================================================ */
+(function(){
+  const out = $('#c-code');
+  function render(){
+    const n = +$('#c-range').value, col = $('#c-color').value, font = $('#c-select').value;
+    const txt = $('#c-text').value || ' ', on = $('#c-switch').checked, listed = $('#c-list').value;
+    $('#v-c1').textContent = n;
+    $('#c-prog').value = n;
+    const blob = $('#c-blob');
+    blob.style.background = 'linear-gradient(135deg,'+col+', '+col+'55)';
+    blob.style.transform = 'scale('+(0.55 + n/100).toFixed(2)+')';
+    blob.style.borderRadius = on ? '26px' : '50%';
+    const msg = $('#c-msg');
+    msg.textContent = txt; msg.style.color = col; msg.style.fontFamily = font;
+    $('#c-echo').textContent = 'range='+n+'  ·  color='+col+'  ·  switch='+(on?'on':'off')+(listed?('  ·  picked="'+listed+'"'):'');
+    out.innerHTML = CM('all native — zero dependencies')+'\n'+H(esc(
+      '<input type="range" min="0" max="100" value="'+n+'">\n'+
+      '<input type="color" value="'+col+'">\n'+
+      '<select>…</select>\n'+
+      '<input type="checkbox" '+(on?'checked':'')+'>\n'+
+      '<input list="fruits"> <datalist id="fruits">…</datalist>\n'+
+      '<progress max="100" value="'+n+'"></progress>'
+    ));
+  }
+  ['#c-range','#c-color','#c-select','#c-text','#c-switch','#c-list']
+    .forEach(s => $(s).addEventListener('input', render));
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   07 — dialog, popover, toast
+   ============================================================ */
+(function(){
+  const dlg = $('#my-dialog');
+  $('#open-dialog').addEventListener('click', () => dlg.showModal());
+  let t = 0;
+  $('#open-toast').addEventListener('click', () => {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = '🔔 Toast #' + (++t) + ' — created, shown, self-destructs.';
+    $('#toast-region').append(el);
+    setTimeout(() => { el.style.transition='.3s'; el.style.opacity='0'; el.style.transform='translateX(30px)';
+      setTimeout(()=>el.remove(), 320); }, 2600);
+  });
+  const render = () => { $('#nw-code').innerHTML =
+    CM('a modal — focus trap, Escape, backdrop: all free')+'\n'+
+    H(esc('<dialog id="d"><p>Hello</p><form method="dialog"><button>OK</button></form></dialog>'))+'\n'+
+    'd.showModal();\n\n'+
+    CM('a popover — no JS at all, just two attributes')+'\n'+
+    H(esc('<button popovertarget="tip">Toggle</button>\n<div id="tip" popover>…</div>'))+'\n\n'+
+    CM('a disclosure — searchable, accessible, native')+'\n'+
+    H(esc('<details><summary>Question</summary><p>Answer</p></details>')); };
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   08 — form validation
+   ============================================================ */
+(function(){
+  const form = $('#demo-form'), out = $('#fv-code'), meter = $('#pw-meter');
+  seg('fv-mode', v => {
+    form.classList.toggle('mode-user', v==='user');
+    form.classList.toggle('mode-eager', v==='eager');
+    render();
+  });
+  $('#fv-meter').addEventListener('change', e => { meter.style.display = e.target.checked ? '' : 'none'; });
+  $('#f-pass').addEventListener('input', e => {
+    const v = e.target.value;
+    let score = 0;
+    if(v.length >= 8) score++;
+    if(/[A-Z]/.test(v) && /[a-z]/.test(v)) score++;
+    if(/\d/.test(v)) score++;
+    if(/[^\w\s]/.test(v)) score++;
+    const bar = meter.firstElementChild;
+    bar.style.width = (score/4*100)+'%';
+    bar.style.background = ['var(--accent-2)','var(--accent-2)','var(--warn)','var(--accent-3)','var(--accent-3)'][score];
+    $('#pw-hint').textContent = T(['8+ characters.','Weak — add length.','Fair — mix upper and lower case.','Good — add a number.','Strong. 💪'][score]);
+  });
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const ok = form.checkValidity();
+    $('#f-out').textContent = T(ok ? '✅ Valid — in a real app this would now be sent to a server.'
+                                   : '⚠️ Fix the highlighted fields first.');
+    $('#f-out').style.color = ok ? 'var(--accent-3)' : 'var(--accent-2)';
+    if(!ok) form.reportValidity();
+  });
+  function render(){
+    const mode = segVal('fv-mode');
+    out.innerHTML = CM('the browser validates; CSS reacts')+'\n'+
+      H(esc('<input type="email" required>'))+'\n'+
+      H(esc('<input type="password" required minlength="8">'))+'\n\n'+
+      (mode==='user'
+        ? S('input:user-invalid')+'   '+CM('waits until the user has finished — kind')+'\n'
+        : S('input:invalid')+'   '+CM('fires on the very first keystroke — harsh')+'\n')+
+      P('border-color','var(--accent-2)')+'\n}';
+  }
+  form.classList.toggle('mode-user',  segVal('fv-mode') === 'user');
+  form.classList.toggle('mode-eager', segVal('fv-mode') === 'eager');
+  if(!$('#fv-meter').checked) meter.style.display = 'none';
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   09 — visual designer
+   ============================================================ */
+(function(){
+  const card = $('#v-card'), out = $('#v-code');
+  const ks = {hue:$('#k-hue'), rad:$('#k-vrad'), sh:$('#k-shadow'), blur:$('#k-blur'), ang:$('#k-ang')};
+  function render(){
+    const h=+ks.hue.value, r=+ks.rad.value, sh=+ks.sh.value, bl=+ks.blur.value, ang=+ks.ang.value;
+    const glass = $('#k-glass').checked;
+    $('#v-hue').textContent = h; $('#v-vrad').textContent = r+'px';
+    $('#v-shadow').textContent = sh; $('#v-blur').textContent = bl+'px';
+    $('#v-ang').textContent = ang+'deg';
+    const c1 = 'hsl('+h+' 85% 65% / '+(glass?0.22:0.95)+')';
+    const c2 = 'hsl('+((h+55)%360)+' 85% 62% / '+(glass?0.10:0.95)+')';
+    card.style.background = 'linear-gradient('+ang+'deg, '+c1+', '+c2+')';
+    card.style.borderRadius = r+'px';
+    card.style.boxShadow = '0 '+Math.round(sh*0.7)+'px '+sh+'px -'+Math.round(sh*0.35)+'px #000a';
+    card.style.backdropFilter = glass ? 'blur('+bl+'px) saturate(160%)' : 'none';
+    card.style.border = glass ? '1px solid hsl('+h+' 90% 80% / .35)' : '1px solid transparent';
+    card.style.color = glass ? 'var(--text)' : '#0e1220';
+    out.innerHTML = S('.surface')+'\n'+
+      P('background','linear-gradient('+ang+'deg, '+c1+', '+c2+')')+'\n'+
+      P('border-radius', r+'px')+'\n'+
+      P('box-shadow','0 '+Math.round(sh*0.7)+'px '+sh+'px -'+Math.round(sh*0.35)+'px #000a')+'\n'+
+      (glass ? P('backdrop-filter','blur('+bl+'px) saturate(160%)')+'   '+CM('frosted glass')+'\n' : '')+
+      '}';
+  }
+  Object.values(ks).forEach(k => k.addEventListener('input', render));
+  $('#k-glass').addEventListener('change', render);
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   10 — motion
+   ============================================================ */
+(function(){
+  const ball = $('#m-ball'), out = $('#m-code');
+  const st = {dur:+$('#k-dur').value, ease:segVal('m-ease'), prop:segVal('m-prop'), out:false};
+  const track = $('#m-track');
+  function dist(){ return Math.max(0, Math.round(track.clientWidth - ball.offsetWidth - 34)) + 'px'; }
+  function css(){
+    const t = st.out, d = dist();
+    if(st.prop==='move')   return t ? 'translateX('+d+')' : 'none';
+    if(st.prop==='scale')  return t ? 'scale(1.9)' : 'scale(1)';
+    if(st.prop==='rotate') return t ? 'rotate(405deg)' : 'rotate(0deg)';
+    return t ? 'translateX('+d+') rotate(405deg) scale(1.4)' : 'none';
+  }
+  addEventListener('resize', () => { if(st.out) render(); });
+  function render(){
+    $('#v-dur').textContent = st.dur+'ms';
+    ball.style.transitionDuration = st.dur+'ms';
+    ball.style.transitionTimingFunction = st.ease;
+    ball.style.transform = css();
+    out.innerHTML = CM('change a value; the browser fills in the frames')+'\n'+
+      S('.ball')+'\n'+P('transition','transform '+st.dur+'ms '+st.ease)+'\n}\n'+
+      S('.ball.is-active')+'\n'+P('transform', css()==='none' ? 'none' : css())+'\n}\n\n'+
+      CM('animate transform + opacity only — they run on the GPU');
+  }
+  function toggle(){ st.out = !st.out; render(); }
+  $('#m-go').addEventListener('click', toggle);
+  ball.addEventListener('click', toggle);
+  $('#k-dur').addEventListener('input', e => { st.dur=+e.target.value; render(); });
+  seg('m-ease', v => { st.ease=v; render(); });
+  seg('m-prop', v => { st.prop=v; st.out=false; render(); });
+  $('#k-loop').addEventListener('change', e => {
+    ball.classList.toggle('looping', e.target.checked);
+    if(e.target.checked){
+      out.innerHTML = CM('a keyframe animation — a scripted sequence, on repeat')+'\n'+
+        '<span class="kw">@keyframes</span> <span class="sel">loopy</span> {\n'+
+        '  <span class="sel">0%</span>   { '+P('transform','translateX(0)').trim()+' }\n'+
+        '  <span class="sel">50%</span>  { '+P('transform','translateX(120px) rotate(180deg) scale(1.25)').trim()+' }\n'+
+        '  <span class="sel">100%</span> { '+P('transform','translateX(0) rotate(360deg)').trim()+' }\n}\n'+
+        S('.ball')+'\n'+P('animation','loopy 2.4s ease-in-out infinite')+'\n}';
+    } else render();
+  });
+  addEventListener('langchange', render);
+  render();
+  if($('#k-loop').checked) $('#k-loop').dispatchEvent(new Event('change'));
+})();
+
+/* ============================================================
+   12 — events
+   ============================================================ */
+(function(){
+  const target = $('#ev-target'), log = $('#ev-log'), out = $('#ev-code');
+  let n = 0, lastMove = 0;
+  function say(msg, colour){
+    const line = document.createElement('div');
+    line.textContent = '▸ ' + msg;
+    if(colour) line.style.color = colour;
+    log.prepend(line);
+    if(log.childElementCount > 40) log.lastElementChild.remove();
+  }
+  const on = v => !!$('.ev-on[value="'+v+'"]:checked');
+  target.addEventListener('click', e => { if(!on('click')) return; n++;
+    say(T('click')+'  #'+n+'  at ('+Math.round(e.offsetX)+', '+Math.round(e.offsetY)+')', 'var(--c-prop)'); });
+  target.addEventListener('dblclick', () => { if(on('dblclick')) say(T('dblclick — two fast clicks'), 'var(--c-kw)'); });
+  target.addEventListener('pointermove', e => {
+    if(!on('pointermove')) return;
+    const now = Date.now(); if(now - lastMove < 90) return; lastMove = now;
+    const r = target.getBoundingClientRect();
+    const x = Math.round(((e.clientX-r.left)/r.width)*100);
+    target.style.background = 'radial-gradient(140px 140px at '+x+'% 50%, var(--accent-soft), transparent)';
+    say(T('pointermove')+'  x = '+x+'%', 'var(--c-val)');
+  });
+  target.addEventListener('pointerenter', () => { if(on('hover')) say(T('pointerenter — cursor arrived'), 'var(--c-attr)'); });
+  target.addEventListener('pointerleave', () => { if(on('hover')) { say(T('pointerleave — cursor left'), 'var(--c-attr)'); target.style.background=''; } });
+  target.addEventListener('keydown', e => { if(on('keydown')) say(T('keydown')+'  key = "'+e.key+'"', 'var(--c-sel)'); });
+  target.addEventListener('focus', () => target.textContent = T('focused — now type something'));
+  target.addEventListener('blur',  () => target.textContent = T('interact with me'));
+  $('#ev-clear').addEventListener('click', () => { log.innerHTML=''; n=0; });
+  const code = () => { out.innerHTML = CM('the entire interactivity model, in one line')+'\n'+
+    'element.<span class="kw">addEventListener</span>(<span class="str">"click"</span>, (event) =&gt; {\n'+
+    '  <span class="cm">// event.target, event.key, event.clientX … all available here</span>\n'+
+    '  console.log(<span class="str">"something happened!"</span>);\n});'; };
+  addEventListener('langchange', code);
+  code();
+})();
+
+/* ============================================================
+   13 — state drives the UI
+   ============================================================ */
+(function(){
+  const initial = {count:0, dark:true, label:'Likes'};
+  let state = {
+    count: recall('demo.count', 0),
+    dark:  $('#st-dark').checked,
+    label: $('#st-label').value || 'Likes'
+  };
+  const view = $('#st-view');
+  function render(){
+    $('#st-count').textContent = state.count;
+    $('#st-lab').textContent = state.label;
+    view.style.background = state.dark ? '#0b0d13' : '#f2f4fa';
+    view.style.color = state.dark ? 'var(--text)' : '#101018';
+    view.style.border = '1px solid ' + (state.dark ? 'var(--line)' : '#d7dced');
+    $('#st-json').innerHTML =
+      '{\n  <span class="prop">count</span>: <span class="val">'+state.count+'</span>,\n'+
+      '  <span class="prop">dark</span>:  <span class="kw">'+state.dark+'</span>,\n'+
+      '  <span class="prop">label</span>: <span class="str">"'+esc(state.label)+'"</span>\n}';
+  }
+  function set(patch){ state = {...state, ...patch}; remember('demo.count', state.count); render(); }
+  $$('[data-act]').forEach(b => b.addEventListener('click', () => {
+    const a = b.dataset.act;
+    if(a==='inc') set({count: state.count+1});
+    if(a==='dec') set({count: state.count-1});
+    if(a==='reset'){ state = {...initial}; $('#st-dark').checked = true; $('#st-label').value = 'Likes';
+                     remember('demo.count', 0); remember('ctl.st-dark', true); remember('ctl.st-label','Likes'); render(); }
+  }));
+  $('#st-dark').addEventListener('change', e => set({dark:e.target.checked}));
+  $('#st-label').addEventListener('input', e => set({label:e.target.value || ' '}));
+  const code = () => { $('#st-code').innerHTML =
+    CM('1. one object is the single source of truth')+'\n'+
+    '<span class="kw">let</span> state = { count: 0, dark: <span class="kw">true</span>, label: <span class="str">"Likes"</span> };\n\n'+
+    CM('2. one function paints the screen from it')+'\n'+
+    '<span class="kw">function</span> render() {\n'+
+    '  countEl.textContent = state.count;\n'+
+    '  view.style.background = state.dark ? <span class="str">"#0b0d13"</span> : <span class="str">"#f2f4fa"</span>;\n}\n\n'+
+    CM('3. never touch the DOM directly — change state, re-render')+'\n'+
+    '<span class="kw">function</span> set(patch) { state = { ...state, ...patch }; render(); }\n'+
+    'button.onclick = () =&gt; set({ count: state.count + 1 });'; };
+  addEventListener('langchange', () => { code(); render(); });
+  code();
+  render();
+})();
+
+/* ============================================================
+   14 — reactive todo app
+   ============================================================ */
+(function(){
+  let todos = recall('todos', [
+    {id:1, text:T('Understand flexbox'), done:true},
+    {id:2, text:T('Ship something ugly but working'), done:false},
+    {id:3, text:T('Deploy it to Cloudflare Pages'), done:false}
+  ]);
+  let nextId = recall('todoNextId', 4);
+  let filter = segVal('td-filter') || 'all';
+  const list = $('#todo-list');
+
+  function visible(){
+    if(filter==='active') return todos.filter(t => !t.done);
+    if(filter==='done')   return todos.filter(t => t.done);
+    return todos;
+  }
+  function render(){
+    const items = visible();
+    list.innerHTML = items.map(t =>
+      '<li class="todo-item" data-id="'+t.id+'">'+
+        '<input type="checkbox" '+(t.done?'checked':'')+' aria-label="Toggle">'+
+        '<span>'+esc(t.text)+'</span>'+
+        '<button aria-label="Delete">✕</button>'+
+      '</li>').join('');
+    remember('todos', todos); remember('todoNextId', nextId);
+    const left = todos.filter(t => !t.done).length;          // derived, never stored
+    $('#todo-count').textContent = T('{n} tasks left').replace('{n}', left);
+    $('#todo-empty').style.display = items.length ? 'none' : '';
+  }
+  $('#todo-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = $('#todo-input'), text = input.value.trim();
+    if(!text) return;
+    todos = [...todos, {id:nextId++, text, done:false}];
+    input.value = '';
+    render();
+  });
+  list.addEventListener('click', e => {
+    const li = e.target.closest('.todo-item'); if(!li) return;
+    const id = +li.dataset.id;
+    if(e.target.matches('input[type=checkbox]'))
+      todos = todos.map(t => t.id===id ? {...t, done:!t.done} : t);
+    else if(e.target.matches('button'))
+      todos = todos.filter(t => t.id !== id);
+    else return;
+    render();
+  });
+  seg('td-filter', v => { filter = v; render(); });
+  $('#todo-clear').addEventListener('click', () => { todos = todos.filter(t => !t.done); render(); });
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   15 — view transitions
+   ============================================================ */
+(function(){
+  const grid = $('#vt-grid');
+  const emoji = ['🦫','🌿','🍉','🛶','☀️','🐟','🪴','🫧','🥥','🐚','🌊','🧊'];
+  let items = emoji.map((e,i) => ({id:i, e}));
+  function render(){
+    grid.innerHTML = items.map(it =>
+      '<div class="vt-item" style="view-transition-name:vt'+it.id+'">'+it.e+'</div>').join('');
+  }
+  function shuffle(){ items = [...items].sort(() => Math.random()-0.5); }
+  $('#vt-shuffle').addEventListener('click', () => {
+    if(document.startViewTransition) document.startViewTransition(() => { shuffle(); render(); });
+    else { shuffle(); render(); }
+  });
+  $('#vt-plain').addEventListener('click', () => { shuffle(); render(); });
+  if(!document.startViewTransition) $('#vt-support').style.display = '';
+  render();
+})();
+
+/* ============================================================
+   15b — clamp()
+   ============================================================ */
+(function(){
+  const frame = $('#cl-frame'), text = $('#cl-text'), out = $('#cl-code'), status = $('#cl-status');
+  function render(){
+    const w = +$('#k-clw').value, mn = +$('#k-clmin').value, id = +$('#k-clid').value, mx = +$('#k-clmax').value;
+    const mnRem = (mn/16).toFixed(2)+'rem', mxRem = (mx/16).toFixed(2)+'rem';
+    frame.style.width = 'min('+w+'px, 100%)';
+    $('#v-clw').textContent = w+'px';
+    $('#v-clmin').textContent = mnRem;
+    $('#v-clid').textContent = id+'cqw';
+    $('#v-clmax').textContent = mxRem;
+    text.style.fontSize = 'clamp('+mnRem+', '+id+'cqw, '+mxRem+')';
+    const ideal = frame.getBoundingClientRect().width*id/100;
+    status.textContent = T(ideal < mn ? 'ideal is below the floor → the MIN wins'
+                         : ideal > mx ? 'ideal is above the ceiling → the MAX wins'
+                         : 'ideal is in range → it scales with the container');
+    out.innerHTML = CM('one line replaces four breakpoints')+'\n'+
+      S('h1')+'\n'+P('font-size','clamp('+mnRem+', '+id+'cqw, '+mxRem+')')+'\n}\n\n'+
+      CM('cqw = 1% of the container width; vw = 1% of the screen width');
+  }
+  ['#k-clw','#k-clmin','#k-clid','#k-clmax'].forEach(s => $(s).addEventListener('input', render));
+  addEventListener('langchange', render);
+  render();
+})();
+
+/* ============================================================
+   Day / night
+   ------------------------------------------------------------
+   The <head> script already picked a theme before first paint.
+   Here we only handle the toggle, and keep following the system
+   setting for as long as the visitor hasn't overridden it.
+   ============================================================ */
+(function(){
+  const btn = $('#theme-btn'), icon = $('#theme-icon');
+  const apply = t => {
+    document.documentElement.dataset.theme = t;
+    icon.textContent = t === 'dark' ? '☾' : '☀︎';
+    btn.title = T(t === 'dark' ? 'Night mode — click for day' : 'Day mode — click for night');
+    btn.setAttribute('aria-label', btn.title);
+  };
+  apply(document.documentElement.dataset.theme || 'dark');
+  btn.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    apply(next);
+    try { localStorage.setItem('fep.theme', next); } catch(e) {}
+  });
+  const mq = matchMedia('(prefers-color-scheme: light)');
+  mq.addEventListener('change', e => {
+    let chosen = null; try { chosen = localStorage.getItem('fep.theme'); } catch(err) {}
+    if(!chosen) apply(e.matches ? 'light' : 'dark');
+  });
+})();
+
+/* ============================================================
+   The ☰ lesson menu (tablet + mobile only)
+   ============================================================ */
+(function(){
+  const btn = $('#menu-btn'), scrim = $('#nav-scrim'), panel = $('#nav-panel');
+  const isOpen = () => document.body.classList.contains('nav-open');
+  function set(open){
+    document.body.classList.toggle('nav-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close the lesson list' : 'Open the lesson list');
+    if(open) panel.querySelector('a.active, a')?.focus({preventScroll:true});
+  }
+  btn.addEventListener('click', () => set(!isOpen()));
+  scrim.addEventListener('click', () => set(false));
+  panel.addEventListener('click', e => { if(e.target.closest('a')) set(false); });
+  addEventListener('keydown', e => { if(e.key === 'Escape' && isOpen()){ set(false); btn.focus(); } });
+  addEventListener('resize', () => { if(innerWidth >= 1024 && isOpen()) set(false); });
+})();
+
+/* ============================================================
+   Sidebar: highlight where you are, remember where you've been
+   ============================================================ */
+(function(){
+  const links = $$('#toc a');
+  const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const seen = new Set(recall('seen', []));
+  const paint = () => seen.forEach(id => map.get(id)?.classList.add('done'));
+  paint();
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if(!en.isIntersecting) return;
+      links.forEach(a => a.classList.remove('active'));
+      const a = map.get(en.target.id);
+      if(!a) return;
+      a.classList.add('active');
+      if(!seen.has(en.target.id)){
+        seen.add(en.target.id); a.classList.add('done');
+        remember('seen', [...seen]);
+      }
+      remember('lastLesson', en.target.id);
+      if(document.body.classList.contains('nav-open'))
+        a.scrollIntoView({block:'nearest', behavior:'smooth'});
+    });
+  }, {rootMargin:'-15% 0px -70% 0px'});
+  $$('section.lesson').forEach(s => io.observe(s));
+})();
+
+/* ============================================================
+   Remember your place on the page
+   ============================================================ */
+(function(){
+  if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  let t;
+  addEventListener('scroll', () => {
+    clearTimeout(t);
+    t = setTimeout(() => remember('scrollY', Math.round(scrollY)), 160);
+  }, {passive:true});
+  addEventListener('beforeunload', flush);
+
+  const y = recall('scrollY', 0);
+  if(y > 400 && !location.hash){
+    addEventListener('load', () => {
+      const root = document.documentElement, prev = root.style.scrollBehavior;
+      root.style.scrollBehavior = 'auto';
+      scrollTo(0, y);
+      requestAnimationFrame(() => { root.style.scrollBehavior = prev; });
+      showResume();
+    });
+  }
+
+  function showResume(){
+    const id = recall('lastLesson', null);
+    const name = id ? ($('#toc a[href="#' + id + '"]')?.textContent.trim() || '') : '';
+    const bar = document.createElement('div');
+    bar.className = 'resume';
+    bar.innerHTML = '<span>↩︎ ' + T('Picked up where you left off') +
+      (name ? ' — <b>' + esc(name) + '</b>' : '') + '</span>' +
+      '<button class="btn" id="resume-top">' + T('Start from the top') + '</button>' +
+      '<button class="icon-btn" id="resume-x" aria-label="Dismiss">✕</button>';
+    document.body.append(bar);
+    requestAnimationFrame(() => bar.classList.add('in'));
+    const kill = () => { bar.classList.remove('in'); setTimeout(() => bar.remove(), 300); };
+    $('#resume-top').addEventListener('click', () => { scrollTo({top:0, behavior:'smooth'}); kill(); });
+    $('#resume-x').addEventListener('click', kill);
+    setTimeout(kill, 9000);
+  }
+})();
+
+/* ============================================================
+   Language toggle — runs last, once every demo has rendered once
+   ============================================================ */
+collectI18n();
+$('#lang-btn').addEventListener('click', () => {
+  LANG = LANG === 'zh' ? 'en' : 'zh';
+  try { localStorage.setItem('fep.lang', LANG); } catch(e) {}
+  applyLang();
+});
+applyLang();
+
+const stampYear = () => { const y = $('#pxt-yr'); if(y) y.textContent = new Date().getFullYear(); };
+addEventListener('langchange', stampYear);
+stampYear();
+
+/* ============================================================
+   Reset everything
+   ============================================================ */
+$('#reset-btn').addEventListener('click', () => {
+  if(!confirm(T('Forget every setting, your place on the page, and the todo list?'))) return;
+  try { localStorage.removeItem(STORE_KEY); localStorage.removeItem('fep.theme'); localStorage.removeItem('fep.lang'); } catch(e) {}
+  location.reload();
+});
+</script>
+</body>
+</html>
