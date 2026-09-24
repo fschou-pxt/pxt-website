@@ -208,6 +208,10 @@
 .chip.cw{ background:var(--cw-chip-bg); color:var(--cw-chip-fg); }
 .cwbtn{ background:linear-gradient(90deg,var(--cw-1),var(--cw-2)); }
 .cwbtn:hover{ filter:brightness(1.08); }
+.cw-actions{ display:flex; flex-wrap:wrap; column-gap:12px; }
+.btn.cw-dl{ background:transparent; color:var(--cw-1); box-shadow:inset 0 0 0 2px var(--cw-1); }
+.btn.cw-dl:hover{ background:var(--cw-chip-bg); }
+.cw-note{ color:var(--muted2); font-size:13px; margin:12px 0 0; }
 @media (max-width:600px){
   nav.top{ gap:4px 12px; font-size:12.5px; flex-wrap:wrap; justify-content:flex-end; }
 }
@@ -358,7 +362,12 @@
         <span class="chip cw">Streams large files</span>
         <span class="chip cw">No upload</span>
       </div>
-      <a class="btn cwbtn" href="crosswalk/">Open Crosswalk →</a>
+      <div class="cw-actions">
+        <a class="btn cwbtn" href="crosswalk/">Open Crosswalk →</a>
+        <a class="btn cw-dl" href="crosswalk/index.html" download="crosswalk.html">Download for offline use ↓</a>
+      </div>
+      <p class="cw-note">One self-contained HTML file. Save it to your computer and open it in Chrome, Edge,
+        Firefox, or Safari, with no internet connection needed.</p>
     </div>
   </div>
 </section>
