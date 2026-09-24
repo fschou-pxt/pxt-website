@@ -195,8 +195,6 @@
 /* the 4th nav item needs a little room on small screens */
 @media (max-width:600px){
   header.site .bar{ gap:12px; }
-  header.site .brand span{ display:none; }
-  nav.top{ gap:14px; font-size:13px; }
 }
 
 /* Crosswalk card */
@@ -212,8 +210,35 @@
 .btn.cw-dl{ background:transparent; color:var(--cw-1); box-shadow:inset 0 0 0 2px var(--cw-1); }
 .btn.cw-dl:hover{ background:var(--cw-chip-bg); }
 .cw-note{ color:var(--muted2); font-size:13px; margin:12px 0 0; }
+/* Phone menu */
+.menu-btn{ display:none; }
 @media (max-width:600px){
-  nav.top{ gap:4px 12px; font-size:12.5px; flex-wrap:wrap; justify-content:flex-end; }
+  header.site .bar{ position:relative; }
+  .menu-btn{
+    display:inline-flex; flex-direction:column; justify-content:center; gap:5px;
+    width:44px; height:44px; padding:0 11px; border:0; border-radius:12px;
+    background:transparent; color:var(--fg); cursor:pointer;
+  }
+  .menu-btn:hover, .menu-btn[aria-expanded="true"]{ background:var(--cw-chip-bg); }
+  .menu-btn span{ display:block; height:2px; border-radius:2px; background:currentColor;
+    transition:transform .25s, opacity .2s; }
+  .menu-btn[aria-expanded="true"] span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:nth-child(2){ opacity:0; }
+  .menu-btn[aria-expanded="true"] span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  nav.top{
+    position:absolute; top:calc(100% - 4px); right:16px; width:min(240px, calc(100vw - 32px));
+    flex-direction:column; gap:2px; padding:8px; font-size:15px;
+    background:var(--card); color:var(--fg); border-radius:16px; border:1px solid rgba(148,163,184,.2);
+    box-shadow:0 1px 0 rgba(15,23,42,.04), 0 18px 40px rgba(15,23,42,.18);
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity .18s, transform .18s, visibility 0s .18s;
+  }
+  nav.top.open{ opacity:1; visibility:visible; transform:none; transition:opacity .18s, transform .18s; }
+  nav.top a{ padding:12px 14px; border-radius:10px; }
+  nav.top a:hover, nav.top a:focus-visible{ background:var(--cw-chip-bg); }
+}
+@media (max-width:600px) and (prefers-reduced-motion: reduce){
+  nav.top, .menu-btn span{ transition:none; }
 }
 </style>
 </head>
@@ -226,7 +251,10 @@
       <img class="logo-night" src="Assets/logo2-night.png" alt="PXT Tech Studio" />
       <span>PXT Tech Studio</span>
     </a>
-    <nav class="top">
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="top" id="site-nav">
       <a href="#story">Our Story</a>
       <a href="#work">Our Work</a>
       <a href="#playground">Playground</a>
@@ -417,6 +445,24 @@
   </div>
 </footer>
 
-<script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+<script>document.getElementById('yr').textContent = new Date().getFullYear();
+
+// Phone menu
+(function(){
+  var btn = document.querySelector('.menu-btn'), nav = document.getElementById('site-nav');
+  if (!btn || !nav) return;
+  function setOpen(open){
+    nav.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  btn.addEventListener('click', function(e){ e.stopPropagation(); setOpen(!nav.classList.contains('open')); });
+  nav.addEventListener('click', function(e){ if (e.target.closest('a')) setOpen(false); });
+  document.addEventListener('click', function(e){ if (!nav.contains(e.target)) setOpen(false); });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && nav.classList.contains('open')) { setOpen(false); btn.focus(); }
+  });
+  window.matchMedia('(max-width:600px)').addEventListener('change', function(){ setOpen(false); });
+})();</script>
 </body>
 </html>
