@@ -156,9 +156,9 @@
   footer.site a:hover{color:var(--fg);}
 
 /* ===== Front-End Playground card ===== */
-:root{ --play-1:#6366f1; --play-2:#a855f7; --play-chip-bg:#eef0ff; --play-chip-fg:#4338ca; }
+:root{ --play-1:#6366f1; --cw-1:#0f5c56; --cw-2:#8d3d24; --cw-chip-bg:#e6f1ee; --cw-chip-fg:#0f5c56; --play-2:#a855f7; --play-chip-bg:#eef0ff; --play-chip-fg:#4338ca; }
 @media (prefers-color-scheme: dark){
-  :root{ --play-1:#818cf8; --play-2:#c084fc; --play-chip-bg:#1e1b4b; --play-chip-fg:#c7d2fe; }
+  :root{ --play-1:#818cf8; --cw-1:#3fb3a6; --cw-2:#e0a27a; --cw-chip-bg:#12302c; --cw-chip-fg:#a8e0d8; --play-2:#c084fc; --play-chip-bg:#1e1b4b; --play-chip-fg:#c7d2fe; }
 }
 .play .play-pill{
   display:inline-block; font-size:12px; font-weight:700; letter-spacing:.04em;
@@ -198,6 +198,19 @@
   header.site .brand span{ display:none; }
   nav.top{ gap:14px; font-size:13px; }
 }
+
+/* Crosswalk card */
+.cw .cw-pill{ display:inline-block; font-size:12px; font-weight:700; letter-spacing:.04em;
+  padding:4px 12px; border-radius:999px; background:var(--cw-chip-bg); color:var(--cw-chip-fg); }
+.cw .cw-title{ font-family:"Sora",sans-serif; font-weight:700; font-size:30px; margin:16px 0 0; letter-spacing:-.02em;
+  background:linear-gradient(90deg,var(--cw-1),var(--cw-2)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.cw .cw-tag{ color:var(--muted2); font-weight:600; margin:6px 0 0; }
+.chip.cw{ background:var(--cw-chip-bg); color:var(--cw-chip-fg); }
+.cwbtn{ background:linear-gradient(90deg,var(--cw-1),var(--cw-2)); }
+.cwbtn:hover{ filter:brightness(1.08); }
+@media (max-width:600px){
+  nav.top{ gap:4px 12px; font-size:12.5px; flex-wrap:wrap; justify-content:flex-end; }
+}
 </style>
 </head>
 <body>
@@ -213,6 +226,7 @@
       <a href="#story">Our Story</a>
       <a href="#work">Our Work</a>
       <a href="#playground">Playground</a>
+      <a href="#crosswalk">Crosswalk</a>
       <a href="#collaborate">Collaborate</a>
     </nav>
   </div>
@@ -319,6 +333,32 @@
         <span class="chip play">繁體中文</span>
       </div>
       <a class="btn playbtn" href="website-tutorial/">Open the playground →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Crosswalk -->
+<section id="crosswalk" class="wrap" style="padding-bottom:96px;">
+  <div class="prod cw">
+    <div class="accent" style="background:linear-gradient(90deg,var(--cw-1),var(--cw-2));"></div>
+    <div class="pad">
+      <span class="cw-pill">Free · Runs in your browser · No upload</span>
+      <h3 class="cw-title">Crosswalk</h3>
+      <p class="cw-tag">Separate sensitive columns from any set of tables</p>
+      <p class="body">Add CSV or Excel files, mark the columns to remove, and Crosswalk replaces them
+        with a random serial ID, keeping a separate linking table you hold on to. Useful for any tables
+        that share a person, student, customer, or record: health, education, research, or operations.</p>
+      <p class="body">Your files never leave the browser. Large CSVs are streamed, Excel is read sheet by
+        sheet, and original row order is preserved. On its own, this does not make a dataset HIPAA-, FERPA-,
+        or GDPR-compliant.</p>
+      <div class="chips">
+        <span class="chip cw">CSV &amp; Excel</span>
+        <span class="chip cw">Shared primary keys</span>
+        <span class="chip cw">Random serial IDs</span>
+        <span class="chip cw">Streams large files</span>
+        <span class="chip cw">No upload</span>
+      </div>
+      <a class="btn cwbtn" href="crosswalk/">Open Crosswalk →</a>
     </div>
   </div>
 </section>
